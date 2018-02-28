@@ -1,5 +1,5 @@
 # SharedStreets used length delimited messages for tile files. 
-# The Python PBF lib doesn't contain helper funciotns to do this, so borrowing example from:
+# The Python PBF lib doesn't contain helper functions to do this, so borrowing example from:
 # https://www.datadoghq.com/blog/engineering/protobuf-parsing-in-python/
 
 # to run test grab sample tile file via:
