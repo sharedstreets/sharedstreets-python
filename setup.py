@@ -9,4 +9,5 @@ setup(
     keywords = 'sharedstreets nacto openstreetmap map graph street',
     url = 'https://github.com/sharedstreets/sharedstreets-python',
     packages = ['sharedstreets'],
+    install_requires = ['protobuf==3.5.1'],
 )
