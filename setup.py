@@ -12,7 +12,8 @@ setup(
     entry_points = {
         'console_scripts': [
             'sharedstreets-test = sharedstreets.test:main',
+            'sharedstreets-tile = sharedstreets.tile:main',
         ]
     },
-    install_requires = ['protobuf==3.5.1', 'ModestMaps==1.4.7'],
+    install_requires = ['protobuf==3.5.1', 'ModestMaps==1.4.7', 'uritemplate==3.0.0'],
 )
