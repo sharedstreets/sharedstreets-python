@@ -15,5 +15,10 @@ setup(
             'sharedstreets-tile = sharedstreets.tile:main',
         ]
     },
-    install_requires = ['protobuf==3.5.1', 'ModestMaps==1.4.7', 'uritemplate==3.0.0'],
+    install_requires = [
+        'protobuf==3.5.1',
+        'ModestMaps==1.4.7',
+        'uritemplate==3.0.0',
+        'requests==2.18.4',
+        ],
 )
