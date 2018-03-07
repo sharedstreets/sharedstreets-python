@@ -1,4 +1,4 @@
-import argparse, itertools, sys
+import argparse, itertools, sys, json
 import ModestMaps.Core, ModestMaps.OpenStreetMap, uritemplate, requests
 from google.protobuf.internal.decoder import _DecodeVarint32
 from . import sharedstreets_pb2
@@ -118,8 +118,8 @@ def intersection_feature(intersection):
         'id': intersection.id,
         'properties': {
             'id': intersection.id,
-            'inboundSegmentIds': intersection.inboundReferenceIds,
-            'outboundSegmentIds': intersection.outboundReferenceIds,
+            'inboundSegmentIds': list(intersection.inboundReferenceIds),
+            'outboundSegmentIds': list(intersection.outboundReferenceIds),
             },
         'geometry': {
             'type': 'Point',
@@ -127,20 +127,54 @@ def intersection_feature(intersection):
             }
         }
 
+def reference_feature(reference):
+    '''
+    '''
+    LR0, LR1 = reference.locationReferences
+    
+    return {
+        'role': 'SharedStreets:Reference',
+        'id': reference.id,
+        'geometryId': reference.geometryId,
+        'formOfWay': reference.formOfWay,
+        'locationReferences': [
+            {
+                'sequence': 0,
+                'intersectionId': LR0.intersectionId,
+                'distanceToNextRef': LR0.distanceToNextRef,
+                'bearing': LR0.inboundBearing,
+                'outBearing': LR0.outboundBearing,
+                'point': [LR0.lon, LR0.lat]
+                },
+            {
+                'sequence': 1,
+                'intersectionId': LR1.intersectionId,
+                'distanceToNextRef': None,
+                'bearing': None,
+                'outBearing': None,
+                'point': [LR1.lon, LR1.lat]
+                },
+            ]
+        }
+
 def make_geojson(geometries, intersections, references):
     '''
     '''
-    features = []
+    geojson = dict(type='FeatureCollection', features=[], references=[])
     
     for geometry in geometries.values():
-        features.append(geometry_feature(geometry))
-        break
+        geojson['features'].append(geometry_feature(geometry))
+        #break
     
     for intersection in intersections.values():
-        features.append(intersection_feature(intersection))
-        break
+        geojson['features'].append(intersection_feature(intersection))
+        #break
     
-    import pprint; pprint.pprint(features)
+    for reference in references.values():
+        geojson['references'].append(reference_feature(reference))
+        #break
+    
+    return geojson
 
 parser = argparse.ArgumentParser(description='Download a tile of SharedStreets data')
 parser.add_argument('zoom', type=int, help='Tile zoom')
@@ -150,5 +184,5 @@ parser.add_argument('y', type=int, help='Tile Y coordinate')
 def main():
     args = parser.parse_args()
     geometries, intersections, references = get_tile(args.zoom, args.x, args.y)
-    
-    make_geojson(geometries, intersections, references)
+    geojson = make_geojson(geometries, intersections, references)
+    print(json.dumps(geojson, indent=2))
