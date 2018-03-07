@@ -47,7 +47,7 @@ def is_inside(southwest, northeast, geometry):
     return True
 
 def get_tile(zoom, x, y):
-    '''
+    ''' Get geometries, intersections, and references inside a tile.
     '''
     # Define lat/lon for filtered area
     tile_coord = ModestMaps.Core.Coordinate(y, x, zoom)
@@ -84,6 +84,64 @@ def get_tile(zoom, x, y):
     
     return geometries, intersections, references
 
+def geometry_feature(geometry):
+    '''
+    '''
+    return {
+        'type': 'Feature',
+        'role': 'SharedStreets:Geometry',
+        'id': geometry.id,
+        'properties': {
+            'id': geometry.id,
+            'forwardReferenceId': geometry.forwardReferenceId,
+            'startIntersectionId': geometry.fromIntersectionId,
+            'backReferenceId': geometry.backReferenceId,
+            'endIntersectionId': geometry.toIntersectionId,
+            'roadClass': geometry.roadClass,
+            },
+        'geometry': {
+            'type': 'LineString',
+            'coordinates': [[x, y] for (x, y) in zip(
+                [geometry.lonlats[i] for i in range(0, len(geometry.lonlats), 2)],
+                [geometry.lonlats[i] for i in range(1, len(geometry.lonlats), 2)]
+                )
+                ]
+            }
+        }
+
+def intersection_feature(intersection):
+    '''
+    '''
+    return {
+        'type': 'Feature',
+        'role': 'SharedStreets:Intersection',
+        'id': intersection.id,
+        'properties': {
+            'id': intersection.id,
+            'inboundSegmentIds': intersection.inboundReferenceIds,
+            'outboundSegmentIds': intersection.outboundReferenceIds,
+            },
+        'geometry': {
+            'type': 'Point',
+            'coordinates': [intersection.lon, intersection.lat]
+            }
+        }
+
+def make_geojson(geometries, intersections, references):
+    '''
+    '''
+    features = []
+    
+    for geometry in geometries.values():
+        features.append(geometry_feature(geometry))
+        break
+    
+    for intersection in intersections.values():
+        features.append(intersection_feature(intersection))
+        break
+    
+    import pprint; pprint.pprint(features)
+
 parser = argparse.ArgumentParser(description='Download a tile of SharedStreets data')
 parser.add_argument('zoom', type=int, help='Tile zoom')
 parser.add_argument('x', type=int, help='Tile X coordinate')
@@ -91,4 +149,6 @@ parser.add_argument('y', type=int, help='Tile Y coordinate')
 
 def main():
     args = parser.parse_args()
-    get_tile(args.zoom, args.x, args.y)
+    geometries, intersections, references = get_tile(args.zoom, args.x, args.y)
+    
+    make_geojson(geometries, intersections, references)
