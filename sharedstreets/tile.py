@@ -1,6 +1,5 @@
-import argparse, sys
-import ModestMaps.Core, uritemplate, requests
-from google.protobuf.internal.encoder import _VarintBytes
+import argparse, itertools, sys
+import ModestMaps.Core, ModestMaps.OpenStreetMap, uritemplate, requests
 from google.protobuf.internal.decoder import _DecodeVarint32
 from . import sharedstreets_pb2
 
@@ -13,8 +12,11 @@ data_classes = {
     'metadata': sharedstreets_pb2.SharedStreetsMetadata,
     }
 
+# Used for Mercator projection and tile space
+OSM = ModestMaps.OpenStreetMap.Provider()
+
 def iter_objects(url, DataClass):
-    '''
+    ''' Generate a stream of objects from the protobuf URL.
     '''
     response, position = requests.get(url), 0
     print('Got', len(response.content), 'bytes:',
@@ -30,22 +32,57 @@ def iter_objects(url, DataClass):
         object.ParseFromString(message)
         yield object
 
+def is_inside(southwest, northeast, geometry):
+    ''' Return True if the geometry bbox is inside a location pair bbox.
+    '''
+    lons = [geometry.lonlats[i] for i in range(0, len(geometry.lonlats), 2)]
+    lats = [geometry.lonlats[i] for i in range(1, len(geometry.lonlats), 2)]
+    
+    if max(lons) < southwest.lon or northeast.lon < min(lons):
+        return False
+    
+    elif max(lats) < southwest.lat or northeast.lat < min(lats):
+        return False
+    
+    return True
+
 def get_tile(zoom, x, y):
     '''
     '''
+    # Define lat/lon for filtered area
     tile_coord = ModestMaps.Core.Coordinate(y, x, zoom)
     data_coord = tile_coord.zoomTo(data_zoom).container()
-    
-    print(tile_coord, data_coord)
-    
+    tile_sw = OSM.coordinateLocation(tile_coord.down())
+    tile_ne = OSM.coordinateLocation(tile_coord.right())
     data_zxy = dict(z=data_coord.zoom, x=data_coord.column, y=data_coord.row)
     
-    for (layer, DataClass) in data_classes.items():
-        data_url = uritemplate.expand(data_url_template, layer=layer, **data_zxy)
-        print(data_url, DataClass)
-        for obj in iter_objects(data_url, DataClass):
-            print(obj)
-            break
+    print(tile_coord, data_coord, tile_sw, tile_ne, file=sys.stderr)
+    
+    # Filter geometries within the selected tile
+    geom_data_url = uritemplate.expand(data_url_template, layer='geometry', **data_zxy)
+    geometries = {geom.id: geom for geom in iter_objects(geom_data_url,
+        data_classes['geometry']) if is_inside(tile_sw, tile_ne, geom)}
+    
+    print(len(geometries), 'geometries', file=sys.stderr)
+    
+    # Get intersections attached to one of the filtered geometries
+    inter_data_url = uritemplate.expand(data_url_template, layer='intersection', **data_zxy)
+
+    intersection_ids = {id for id in itertools.chain(*[(geom.fromIntersectionId,
+        geom.toIntersectionId) for geom in geometries.values()])}
+    intersections = {inter.id: inter for inter in iter_objects(inter_data_url,
+        data_classes['intersection']) if inter.id in intersection_ids}
+    
+    print(len(intersections), 'intersections', file=sys.stderr)
+    
+    # Get references attached to one of the filtered geometries
+    ref_data_url = uritemplate.expand(data_url_template, layer='reference', **data_zxy)
+    references = {ref.id: ref for ref in iter_objects(ref_data_url,
+        data_classes['reference']) if ref.geometryId in geometries}
+    
+    print(len(references), 'references', file=sys.stderr)
+    
+    return geometries, intersections, references
 
 parser = argparse.ArgumentParser(description='Download a tile of SharedStreets data')
 parser.add_argument('zoom', type=int, help='Tile zoom')
