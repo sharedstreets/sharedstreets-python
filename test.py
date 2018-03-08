@@ -5,9 +5,10 @@
 # to run test grab sample tile file via:
 # https://tiles.sharedstreets.io/12-1188-1976.reference.pbf 
 
+from __future__ import print_function
 from google.protobuf.internal.encoder import _VarintBytes
 from google.protobuf.internal.decoder import _DecodeVarint32
-import sharedstreets_pb2 as ss
+from sharedstreets import sharedstreets_pb2 as ss
 
 ss.SharedStreetsReference()
 
@@ -21,6 +22,6 @@ with open('12-1188-1976.reference.pbf', 'rb') as f:
         n += msg_len
         reference = ss.SharedStreetsReference()
         reference.ParseFromString(msg_buf)
-        print reference        
+        print(reference)
 
 	
