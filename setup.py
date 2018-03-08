@@ -22,5 +22,6 @@ setup(
         'uritemplate==3.0.0',
         'requests==2.18.4',
         'flask==0.12.2',
+        'gunicorn==19.7.1',
         ],
 )
