@@ -8,7 +8,10 @@ setup(
     license = 'MIT',
     keywords = 'sharedstreets nacto openstreetmap map graph street',
     url = 'https://github.com/sharedstreets/sharedstreets-python',
-    packages = ['sharedstreets'],
+    packages = ['sharedstreets', 'sharedstreets.tests'],
+    package_data = {
+        'sharedstreets.tests': ['data/*.*'],
+        },
     entry_points = {
         'console_scripts': [
             'sharedstreets-test = sharedstreets.test:main',
@@ -23,5 +26,6 @@ setup(
         'requests==2.18.4',
         'flask==0.12.2',
         'gunicorn==19.7.1',
+        'httmock==1.2.6',
         ],
 )
