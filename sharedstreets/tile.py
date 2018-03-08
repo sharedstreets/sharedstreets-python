@@ -15,6 +15,16 @@ data_classes = {
 # Used for Mercator projection and tile space
 OSM = ModestMaps.OpenStreetMap.Provider()
 
+def truncate_id(id):
+    ''' Truncate SharedStreets hash to save space.
+    '''
+    return id[:12]
+
+def round_coord(float):
+    ''' Round a latitude or longitude to appropriate length.
+    '''
+    return round(float, 7)
+
 def iter_objects(url, DataClass):
     ''' Generate a stream of objects from the protobuf URL.
     '''
@@ -90,20 +100,20 @@ def geometry_feature(geometry):
     return {
         'type': 'Feature',
         'role': 'SharedStreets:Geometry',
-        'id': geometry.id,
+        'id': truncate_id(geometry.id),
         'properties': {
-            'id': geometry.id,
-            'forwardReferenceId': geometry.forwardReferenceId,
-            'startIntersectionId': geometry.fromIntersectionId,
-            'backReferenceId': geometry.backReferenceId,
-            'endIntersectionId': geometry.toIntersectionId,
+            'id': truncate_id(geometry.id),
+            'forwardReferenceId': truncate_id(geometry.forwardReferenceId),
+            'startIntersectionId': truncate_id(geometry.fromIntersectionId),
+            'backReferenceId': truncate_id(geometry.backReferenceId),
+            'endIntersectionId': truncate_id(geometry.toIntersectionId),
             'roadClass': geometry.roadClass,
             },
         'geometry': {
             'type': 'LineString',
             'coordinates': [[x, y] for (x, y) in zip(
-                [round(geometry.lonlats[i], 7) for i in range(0, len(geometry.lonlats), 2)],
-                [round(geometry.lonlats[i], 7) for i in range(1, len(geometry.lonlats), 2)]
+                [round_coord(geometry.lonlats[i]) for i in range(0, len(geometry.lonlats), 2)],
+                [round_coord(geometry.lonlats[i]) for i in range(1, len(geometry.lonlats), 2)]
                 )
                 ]
             }
@@ -115,15 +125,15 @@ def intersection_feature(intersection):
     return {
         'type': 'Feature',
         'role': 'SharedStreets:Intersection',
-        'id': intersection.id,
+        'id': truncate_id(intersection.id),
         'properties': {
-            'id': intersection.id,
-            'inboundSegmentIds': list(intersection.inboundReferenceIds),
-            'outboundSegmentIds': list(intersection.outboundReferenceIds),
+            'id': truncate_id(intersection.id),
+            'inboundSegmentIds': list(map(truncate_id, intersection.inboundReferenceIds)),
+            'outboundSegmentIds': list(map(truncate_id, intersection.outboundReferenceIds)),
             },
         'geometry': {
             'type': 'Point',
-            'coordinates': [round(intersection.lon, 7), round(intersection.lat, 7)]
+            'coordinates': [round_coord(intersection.lon), round_coord(intersection.lat)]
             }
         }
 
@@ -134,25 +144,25 @@ def reference_feature(reference):
     
     return {
         'role': 'SharedStreets:Reference',
-        'id': reference.id,
-        'geometryId': reference.geometryId,
+        'id': truncate_id(reference.id),
+        'geometryId': truncate_id(reference.geometryId),
         'formOfWay': reference.formOfWay,
         'locationReferences': [
             {
                 'sequence': 0,
-                'intersectionId': LR0.intersectionId,
+                'intersectionId': truncate_id(LR0.intersectionId),
                 'distanceToNextRef': LR0.distanceToNextRef,
                 'bearing': LR0.inboundBearing,
                 'outBearing': LR0.outboundBearing,
-                'point': [round(LR0.lon, 7), round(LR0.lat, 7)]
+                'point': [round_coord(LR0.lon), round_coord(LR0.lat)]
                 },
             {
                 'sequence': 1,
-                'intersectionId': LR1.intersectionId,
+                'intersectionId': truncate_id(LR1.intersectionId),
                 'distanceToNextRef': None,
                 'bearing': None,
                 'outBearing': None,
-                'point': [round(LR1.lon, 7), round(LR1.lat, 7)]
+                'point': [round_coord(LR1.lon), round_coord(LR1.lat)]
                 },
             ]
         }
