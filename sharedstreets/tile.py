@@ -102,8 +102,8 @@ def geometry_feature(geometry):
         'geometry': {
             'type': 'LineString',
             'coordinates': [[x, y] for (x, y) in zip(
-                [geometry.lonlats[i] for i in range(0, len(geometry.lonlats), 2)],
-                [geometry.lonlats[i] for i in range(1, len(geometry.lonlats), 2)]
+                [round(geometry.lonlats[i], 7) for i in range(0, len(geometry.lonlats), 2)],
+                [round(geometry.lonlats[i], 7) for i in range(1, len(geometry.lonlats), 2)]
                 )
                 ]
             }
@@ -123,7 +123,7 @@ def intersection_feature(intersection):
             },
         'geometry': {
             'type': 'Point',
-            'coordinates': [intersection.lon, intersection.lat]
+            'coordinates': [round(intersection.lon, 7), round(intersection.lat, 7)]
             }
         }
 
@@ -144,7 +144,7 @@ def reference_feature(reference):
                 'distanceToNextRef': LR0.distanceToNextRef,
                 'bearing': LR0.inboundBearing,
                 'outBearing': LR0.outboundBearing,
-                'point': [LR0.lon, LR0.lat]
+                'point': [round(LR0.lon, 7), round(LR0.lat, 7)]
                 },
             {
                 'sequence': 1,
@@ -152,7 +152,7 @@ def reference_feature(reference):
                 'distanceToNextRef': None,
                 'bearing': None,
                 'outBearing': None,
-                'point': [LR1.lon, LR1.lat]
+                'point': [round(LR1.lon, 7), round(LR1.lat, 7)]
                 },
             ]
         }

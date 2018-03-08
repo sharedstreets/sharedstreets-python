@@ -13,6 +13,7 @@ setup(
         'console_scripts': [
             'sharedstreets-test = sharedstreets.test:main',
             'sharedstreets-tile = sharedstreets.tile:main',
+            'sharedstreets-webapp = sharedstreets.webapp:main',
         ]
     },
     install_requires = [
@@ -20,5 +21,6 @@ setup(
         'ModestMaps==1.4.7',
         'uritemplate==3.0.0',
         'requests==2.18.4',
+        'flask==0.12.2',
         ],
 )
