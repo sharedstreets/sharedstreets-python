@@ -1,4 +1,4 @@
-import unittest, httmock, os, posixpath, ModestMaps.Geo
+import unittest, unittest.mock, httmock, os, posixpath, ModestMaps.Geo
 from .. import tile
 
 def respond_locally(url, request):
@@ -115,3 +115,19 @@ class TestTile (unittest.TestCase):
         # Box outside the geometry bbox from MLK & 13th
         sw3 = ModestMaps.Geo.Location(37.80554567109770, -122.2763836383820)
         self.assertFalse(tile.is_inside(sw3, ne, geometry))
+    
+    @unittest.mock.patch('sharedstreets.tile.iter_objects')
+    def test_get_tile(self, iter_objects):
+    
+        everything = unittest.mock.Mock()
+        everything.id = 'everything'
+        everything.geometryId = 'everything'
+        everything.fromIntersectionId = 'everything'
+        everything.lonlats = [-122.27120, 37.80437, -122.27182, 37.80598]
+        iter_objects.return_value = [everything, everything]
+    
+        geometries, intersections, references = tile.get_tile(16, 10509, 25324)
+        
+        self.assertEqual(len(geometries), 1)
+        self.assertEqual(len(intersections), 1)
+        self.assertEqual(len(references), 1)

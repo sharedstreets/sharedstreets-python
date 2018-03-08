@@ -1,7 +1,9 @@
-import argparse, itertools, sys, json
+import argparse, itertools, sys, json, logging
 import ModestMaps.Core, ModestMaps.OpenStreetMap, uritemplate, requests
 from google.protobuf.internal.decoder import _DecodeVarint32
 from . import sharedstreets_pb2
+
+logger = logging.getLogger(__name__)
 
 # https://github.com/sharedstreets/sharedstreets-ref-system/issues/16
 data_url_template, data_zoom = 'https://tiles.sharedstreets.io/{z}-{x}-{y}.{layer}.pbf', 12
@@ -29,8 +31,7 @@ def iter_objects(url, DataClass):
     ''' Generate a stream of objects from the protobuf URL.
     '''
     response, position = requests.get(url), 0
-    print('Got', len(response.content), 'bytes:',
-        repr(response.content[:32]), file=sys.stderr)
+    logger.debug('Got {} bytes: {}'.format(len(response.content), repr(response.content[:32])))
 
     while position < len(response.content):
         message_length, new_position = _DecodeVarint32(response.content, position)
@@ -66,14 +67,14 @@ def get_tile(zoom, x, y):
     tile_ne = OSM.coordinateLocation(tile_coord.right())
     data_zxy = dict(z=data_coord.zoom, x=data_coord.column, y=data_coord.row)
     
-    print(tile_coord, data_coord, tile_sw, tile_ne, file=sys.stderr)
+    logger.debug((tile_coord, data_coord, tile_sw, tile_ne))
     
     # Filter geometries within the selected tile
     geom_data_url = uritemplate.expand(data_url_template, layer='geometry', **data_zxy)
     geometries = {geom.id: geom for geom in iter_objects(geom_data_url,
         data_classes['geometry']) if is_inside(tile_sw, tile_ne, geom)}
     
-    print(len(geometries), 'geometries', file=sys.stderr)
+    logger.debug('{} geometries'.format(len(geometries)))
     
     # Get intersections attached to one of the filtered geometries
     inter_data_url = uritemplate.expand(data_url_template, layer='intersection', **data_zxy)
@@ -83,14 +84,14 @@ def get_tile(zoom, x, y):
     intersections = {inter.id: inter for inter in iter_objects(inter_data_url,
         data_classes['intersection']) if inter.id in intersection_ids}
     
-    print(len(intersections), 'intersections', file=sys.stderr)
+    logger.debug('{} intersections'.format(len(intersections)))
     
     # Get references attached to one of the filtered geometries
     ref_data_url = uritemplate.expand(data_url_template, layer='reference', **data_zxy)
     references = {ref.id: ref for ref in iter_objects(ref_data_url,
         data_classes['reference']) if ref.geometryId in geometries}
     
-    print(len(references), 'references', file=sys.stderr)
+    logger.debug('{} references'.format(len(references)))
     
     return geometries, intersections, references
 
