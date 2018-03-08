@@ -16,11 +16,11 @@ Python implementation of [SharedStreets Reference System](https://github.com/sha
 
 3.  Try downloading a single tile to GeoJSON.
 
-        sharedstreets-tile 16 10509 25324 > 16-10509-25324.geojson
+        sharedstreets-get-tile 16 10509 25324 > 16-10509-25324.geojson
 
 4.  Run a debug webserver and request a tile at [`/tile/16/10508/25324.geojson`](http://127.0.0.1:5000/tile/16/10508/25324.geojson).
 
-        sharedstreets-webapp
+        sharedstreets-debug-webapp
 
 5.  Run a production webserver under [Gunicorn](http://gunicorn.org/).
 

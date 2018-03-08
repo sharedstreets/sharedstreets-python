@@ -14,9 +14,9 @@ setup(
         },
     entry_points = {
         'console_scripts': [
-            'sharedstreets-test = sharedstreets.test:main',
-            'sharedstreets-tile = sharedstreets.tile:main',
-            'sharedstreets-webapp = sharedstreets.webapp:main',
+            'sharedstreets-read-file = sharedstreets.read:main',
+            'sharedstreets-get-tile = sharedstreets.tile:main',
+            'sharedstreets-debug-webapp = sharedstreets.webapp:main',
         ]
     },
     install_requires = [

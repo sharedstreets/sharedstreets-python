@@ -1,6 +1,5 @@
 from __future__ import print_function
 import argparse
-from google.protobuf.internal.encoder import _VarintBytes
 from google.protobuf.internal.decoder import _DecodeVarint32
 from . import sharedstreets_pb2
 
@@ -34,7 +33,7 @@ def main():
                     try:
                         test_object.ParseFromString(msg_buf)
                     except Exception as e:
-                        print('oh no:', ProtobufClass)
+                        print('not it:', ProtobufClass)
                     else:
                         if ProtobufClass is sharedstreets_pb2.SharedStreetsIntersection:
                             print('maybe:', ProtobufClass)
