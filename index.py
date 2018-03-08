@@ -10,7 +10,7 @@ def intersection(pt):
     return generateHash(message)
 
 def generateHash(message):
-    return hashlib.md5(message).digest('hex')
+    return hashlib.md5(message).hexdigest()
 
 if __name__ == '__main__':
     # fixtures
