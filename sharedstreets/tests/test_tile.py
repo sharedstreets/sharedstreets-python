@@ -1,4 +1,4 @@
-import unittest, httmock, os, posixpath
+import unittest, httmock, os, posixpath, ModestMaps.Geo
 from .. import tile
 
 def respond_locally(url, request):
@@ -91,3 +91,27 @@ class TestTile (unittest.TestCase):
         self.assertEqual(m3.geometryId, '8072396f545c82abcb34bd5124c4ba6d')
         self.assertEqual(len(m3.osmMetadata.waySections), 1)
         self.assertEqual(m3.osmMetadata.waySections[0].wayId, 21466380)
+    
+    def test_is_inside(self):
+        
+        with httmock.HTTMock(respond_locally):
+            geometries = tile.iter_objects('http://example.com/geometry.pbf',
+                tile.data_classes['geometry'])
+            
+            # 11th Street between Castro & MLK
+            geometry = next(geometries)
+        
+        # Corner to the northeast near MLK & 15th
+        ne = ModestMaps.Geo.Location(37.806469, -122.275192)
+
+        # Box completely enclosing the geometry from Castro & 10th
+        sw1 = ModestMaps.Geo.Location(37.80355359456757, -122.2787976264954)
+        self.assertTrue(tile.is_inside(sw1, ne, geometry))
+        
+        # Box overlapping the geometry bbox from north side of 11th
+        sw2 = ModestMaps.Geo.Location(37.80440977021365, -122.2777998447418)
+        self.assertTrue(tile.is_inside(sw2, ne, geometry))
+        
+        # Box outside the geometry bbox from MLK & 13th
+        sw3 = ModestMaps.Geo.Location(37.80554567109770, -122.2763836383820)
+        self.assertFalse(tile.is_inside(sw3, ne, geometry))
