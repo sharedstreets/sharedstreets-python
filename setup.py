@@ -27,5 +27,6 @@ setup(
         'flask==0.12.2',
         'gunicorn==19.7.1',
         'httmock==1.2.6',
+        'mock==2.0.0',
         ],
 )
