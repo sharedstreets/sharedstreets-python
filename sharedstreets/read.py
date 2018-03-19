@@ -22,11 +22,16 @@ def main():
         buffer = file.read()
         n = 0
         while n < len(buffer):
+            print('=' * 80)
+            print('bytes', n, end=' ')
+
             msg_len, new_pos = _DecodeVarint32(buffer, n)
             n = new_pos
             msg_buf = buffer[n:n+msg_len]
             n += msg_len
             
+            print('to', n, '--', msg_buf[:12].hex(), '...', msg_buf[-12:].hex())
+
             if ProtobufClass is None:
                 for ProtobufClass in protobuf_classes:
                     test_object = ProtobufClass()
@@ -45,6 +50,8 @@ def main():
                         print('ok:', ProtobufClass)
                         break
             
+            print(' -' * 40)
+
             object = ProtobufClass()
             object.ParseFromString(msg_buf)
             print(object)

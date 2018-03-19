@@ -36,17 +36,17 @@ class TestTile (unittest.TestCase):
                 tile.data_classes['geometry'])
             g1, g2, g3 = list(geometries)
         
-        self.assertEqual(g1.id, '809235c41285600f26c3bb390a99f344')
-        self.assertEqual(g1.lonlats[0:2], [-122.2784457, 37.8045933])
-        self.assertEqual(len(g1.lonlats), 8)
+        self.assertEqual(g1.id, '80832506185371acf24df519ce271d31')
+        self.assertEqual(g1.lonlats[0:2], [-122.2951692, 37.8564139])
+        self.assertEqual(len(g1.lonlats), 10)
 
-        self.assertEqual(g2.id, '802f5d102ca9351370a7baa86b0a3ffe')
-        self.assertEqual(g2.lonlats[0:2], [-122.28499110000001, 37.8226026])
+        self.assertEqual(g2.id, '80a8a7c120332bfb679f877472c9c18d')
+        self.assertEqual(g2.lonlats[0:2], [-122.2926467, 37.7971926])
         self.assertEqual(len(g2.lonlats), 4)
 
-        self.assertEqual(g3.id, '8072396f545c82abcb34bd5124c4ba6d')
-        self.assertEqual(g3.lonlats[0:2], [-122.25996420000001, 37.853876400000004])
-        self.assertEqual(len(g3.lonlats), 6)
+        self.assertEqual(g3.id, '82b5776e9fcce1c64a431a14bd59b15d')
+        self.assertEqual(g3.lonlats[0:2], [-122.28428740000001, 37.827691900000005])
+        self.assertEqual(len(g3.lonlats), 16)
 
     def test_iter_objects_reference(self):
         
