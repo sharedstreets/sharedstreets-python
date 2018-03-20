@@ -48,6 +48,31 @@ class TestTile (unittest.TestCase):
         self.assertEqual(g3.lonlats[0:2], [-122.28428740000001, 37.827691900000005])
         self.assertEqual(len(g3.lonlats), 16)
 
+    def test_iter_objects_reference_20180312(self):
+        
+        with httmock.HTTMock(respond_locally):
+            references = tile.iter_objects('http://example.com/reference-20180312.pbf',
+                tile.data_classes['reference'])
+            r1, r2, r3 = list(references)
+        
+        self.assertEqual(r1.id, '0da8eb83f863b1c7484e3705230e4632')
+        self.assertEqual(r1.geometryId, '4c6740bae7b8ed7fc15b4f79ade6af82')
+        self.assertEqual(len(r1.locationReferences), 2)
+        self.assertEqual(r1.locationReferences[0].intersectionId, '8b60a7a14db65f50b3138cdd1a29c3b8')
+        self.assertEqual(r1.locationReferences[1].intersectionId, '8739b929eae329e18ec631c8363206de')
+        
+        self.assertEqual(r2.id, 'f61c335244e8222f9c31b6eb14fea48a')
+        self.assertEqual(r2.geometryId, '1f624570a89b260bc88e97509be49c96')
+        self.assertEqual(len(r2.locationReferences), 2)
+        self.assertEqual(r2.locationReferences[0].intersectionId, 'd4715dff9b7de5b5dcd107d127f9ffd2')
+        self.assertEqual(r2.locationReferences[1].intersectionId, '988b0c91439ae6663ddc2b0d4808185c')
+        
+        self.assertEqual(r3.id, 'c99662b7d646b3f930abc1cbf3e7290c')
+        self.assertEqual(r3.geometryId, '1f624570a89b260bc88e97509be49c96')
+        self.assertEqual(len(r3.locationReferences), 2)
+        self.assertEqual(r3.locationReferences[0].intersectionId, '988b0c91439ae6663ddc2b0d4808185c')
+        self.assertEqual(r3.locationReferences[1].intersectionId, 'd4715dff9b7de5b5dcd107d127f9ffd2')
+
     def test_iter_objects_intersection_20180307(self):
         
         with httmock.HTTMock(respond_locally):
@@ -83,10 +108,10 @@ class TestTile (unittest.TestCase):
         self.assertEqual(g3.lonlats[0:2], [-122.25996420000001, 37.853876400000004])
         self.assertEqual(len(g3.lonlats), 6)
 
-    def test_iter_objects_reference(self):
+    def test_iter_objects_reference_20180307(self):
         
         with httmock.HTTMock(respond_locally):
-            references = tile.iter_objects('http://example.com/reference.pbf',
+            references = tile.iter_objects('http://example.com/reference-20180307.pbf',
                 tile.data_classes['reference'])
             r1, r2, r3 = list(references)
         
