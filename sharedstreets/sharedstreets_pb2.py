@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='sharedstreets.proto',
   package='',
   syntax='proto3',
-  serialized_pb=_b('\n\x13sharedstreets.proto\"\x1b\n\tDelimiter\x12\x0e\n\x06length\x18\x01 \x01(\r\"B\n\x12GISSectionMetadata\x12\x11\n\tsectionId\x18\x01 \x01(\t\x12\x19\n\x11sectionProperties\x18\x02 \x01(\t\"D\n\x0bGISMetadata\x12\x0e\n\x06source\x18\x01 \x01(\t\x12%\n\x08sections\x18\x02 \x03(\x0b\x32\x13.GISSectionMetadata\"}\n\nWaySection\x12\r\n\x05wayId\x18\x01 \x01(\x04\x12\x1d\n\troadClass\x18\x02 \x01(\x0e\x32\n.RoadClass\x12\x0e\n\x06oneWay\x18\x03 \x01(\x08\x12\x12\n\nroundabout\x18\x04 \x01(\x08\x12\x0c\n\x04link\x18\x05 \x01(\x08\x12\x0f\n\x07nodeIds\x18\x06 \x03(\x04\"/\n\x0bOSMMetadata\x12 \n\x0bwaySections\x18\x01 \x03(\x0b\x32\x0b.WaySection\"q\n\x15SharedStreetsMetadata\x12\x12\n\ngeometryId\x18\x01 \x01(\t\x12!\n\x0bosmMetadata\x18\x02 \x01(\x0b\x32\x0c.OSMMetadata\x12!\n\x0bgisMetadata\x18\x03 \x03(\x0b\x32\x0c.GISMetadata\"\xbe\x01\n\x15SharedStreetsGeometry\x12\n\n\x02id\x18\x01 \x01(\t\x12\x1a\n\x12\x66romIntersectionId\x18\x02 \x01(\t\x12\x18\n\x10toIntersectionId\x18\x03 \x01(\t\x12\x1a\n\x12\x66orwardReferenceId\x18\x04 \x01(\t\x12\x17\n\x0f\x62\x61\x63kReferenceId\x18\x05 \x01(\t\x12\x1d\n\troadClass\x18\x06 \x01(\x0e\x32\n.RoadClass\x12\x0f\n\x07lonlats\x18\x07 \x03(\x01\"\xe9\x01\n\x11LocationReference\x12\x16\n\x0eintersectionId\x18\x01 \x01(\t\x12\x0b\n\x03lon\x18\x02 \x01(\x01\x12\x0b\n\x03lat\x18\x03 \x01(\x01\x12\x18\n\x0einboundBearing\x18\x04 \x01(\x05H\x00\x12\x19\n\x0foutboundBearing\x18\x05 \x01(\x05H\x01\x12\x1b\n\x11\x64istanceToNextRef\x18\x06 \x01(\x05H\x02\x42\x18\n\x16inboundBearing_presentB\x19\n\x17outboundBearing_presentB\x1b\n\x19\x64istanceToNextRef_present\"\xb5\x02\n\x16SharedStreetsReference\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\ngeometryId\x18\x02 \x01(\t\x12\x34\n\tformOfWay\x18\x03 \x01(\x0e\x32!.SharedStreetsReference.FormOfWay\x12.\n\x12locationReferences\x18\x04 \x03(\x0b\x32\x12.LocationReference\"\x94\x01\n\tFormOfWay\x12\r\n\tUndefined\x10\x00\x12\x0c\n\x08Motorway\x10\x01\x12\x17\n\x13MultipleCarriageway\x10\x02\x12\x15\n\x11SingleCarriageway\x10\x03\x12\x0e\n\nRoundabout\x10\x04\x12\x11\n\rTrafficSquare\x10\x05\x12\x0c\n\x08SlipRoad\x10\x06\x12\t\n\x05Other\x10\x07\"\x8c\x01\n\x19SharedStreetsIntersection\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06nodeId\x18\x02 \x01(\x04\x12\x0b\n\x03lon\x18\x03 \x01(\x01\x12\x0b\n\x03lat\x18\x04 \x01(\x01\x12\x1b\n\x13inboundReferenceIds\x18\x05 \x03(\t\x12\x1c\n\x14outboundReferenceIds\x18\x06 \x03(\t*\x89\x01\n\tRoadClass\x12\x0c\n\x08Motorway\x10\x00\x12\t\n\x05Trunk\x10\x01\x12\x0b\n\x07Primary\x10\x02\x12\r\n\tSecondary\x10\x03\x12\x0c\n\x08Tertiary\x10\x04\x12\x0f\n\x0bResidential\x10\x05\x12\x10\n\x0cUnclassified\x10\x06\x12\x0b\n\x07Service\x10\x07\x12\t\n\x05Other\x10\x08\x42\x14\x42\x12SharedStreetsProtob\x06proto3')
+  serialized_pb=_b('\n\x13sharedstreets.proto\"\x1b\n\tDelimiter\x12\x0e\n\x06length\x18\x01 \x01(\r\"B\n\x12GISSectionMetadata\x12\x11\n\tsectionId\x18\x01 \x01(\t\x12\x19\n\x11sectionProperties\x18\x02 \x01(\t\"D\n\x0bGISMetadata\x12\x0e\n\x06source\x18\x01 \x01(\t\x12%\n\x08sections\x18\x02 \x03(\x0b\x32\x13.GISSectionMetadata\"\x8b\x01\n\nWaySection\x12\r\n\x05wayId\x18\x01 \x01(\x04\x12\x1d\n\troadClass\x18\x02 \x01(\x0e\x32\n.RoadClass\x12\x0e\n\x06oneWay\x18\x03 \x01(\x08\x12\x12\n\nroundabout\x18\x04 \x01(\x08\x12\x0c\n\x04link\x18\x05 \x01(\x08\x12\x0f\n\x07nodeIds\x18\x06 \x03(\x04\x12\x0c\n\x04name\x18\x07 \x01(\t\"=\n\x0bOSMMetadata\x12 \n\x0bwaySections\x18\x01 \x03(\x0b\x32\x0b.WaySection\x12\x0c\n\x04name\x18\x02 \x01(\t\"q\n\x15SharedStreetsMetadata\x12\x12\n\ngeometryId\x18\x01 \x01(\t\x12!\n\x0bosmMetadata\x18\x02 \x01(\x0b\x32\x0c.OSMMetadata\x12!\n\x0bgisMetadata\x18\x03 \x03(\x0b\x32\x0c.GISMetadata\"\xbe\x01\n\x15SharedStreetsGeometry\x12\n\n\x02id\x18\x01 \x01(\t\x12\x1a\n\x12\x66romIntersectionId\x18\x02 \x01(\t\x12\x18\n\x10toIntersectionId\x18\x03 \x01(\t\x12\x1a\n\x12\x66orwardReferenceId\x18\x04 \x01(\t\x12\x17\n\x0f\x62\x61\x63kReferenceId\x18\x05 \x01(\t\x12\x1d\n\troadClass\x18\x06 \x01(\x0e\x32\n.RoadClass\x12\x0f\n\x07lonlats\x18\x07 \x03(\x01\"\xe9\x01\n\x11LocationReference\x12\x16\n\x0eintersectionId\x18\x01 \x01(\t\x12\x0b\n\x03lon\x18\x02 \x01(\x01\x12\x0b\n\x03lat\x18\x03 \x01(\x01\x12\x18\n\x0einboundBearing\x18\x04 \x01(\x05H\x00\x12\x19\n\x0foutboundBearing\x18\x05 \x01(\x05H\x01\x12\x1b\n\x11\x64istanceToNextRef\x18\x06 \x01(\x05H\x02\x42\x18\n\x16inboundBearing_presentB\x19\n\x17outboundBearing_presentB\x1b\n\x19\x64istanceToNextRef_present\"\xb5\x02\n\x16SharedStreetsReference\x12\n\n\x02id\x18\x01 \x01(\t\x12\x12\n\ngeometryId\x18\x02 \x01(\t\x12\x34\n\tformOfWay\x18\x03 \x01(\x0e\x32!.SharedStreetsReference.FormOfWay\x12.\n\x12locationReferences\x18\x04 \x03(\x0b\x32\x12.LocationReference\"\x94\x01\n\tFormOfWay\x12\r\n\tUndefined\x10\x00\x12\x0c\n\x08Motorway\x10\x01\x12\x17\n\x13MultipleCarriageway\x10\x02\x12\x15\n\x11SingleCarriageway\x10\x03\x12\x0e\n\nRoundabout\x10\x04\x12\x11\n\rTrafficSquare\x10\x05\x12\x0c\n\x08SlipRoad\x10\x06\x12\t\n\x05Other\x10\x07\"\x8c\x01\n\x19SharedStreetsIntersection\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06nodeId\x18\x02 \x01(\x04\x12\x0b\n\x03lon\x18\x03 \x01(\x01\x12\x0b\n\x03lat\x18\x04 \x01(\x01\x12\x1b\n\x13inboundReferenceIds\x18\x05 \x03(\t\x12\x1c\n\x14outboundReferenceIds\x18\x06 \x03(\t*\x89\x01\n\tRoadClass\x12\x0c\n\x08Motorway\x10\x00\x12\t\n\x05Trunk\x10\x01\x12\x0b\n\x07Primary\x10\x02\x12\r\n\tSecondary\x10\x03\x12\x0c\n\x08Tertiary\x10\x04\x12\x0f\n\x0bResidential\x10\x05\x12\x10\n\x0cUnclassified\x10\x06\x12\x0b\n\x07Service\x10\x07\x12\t\n\x05Other\x10\x08\x42\x14\x42\x12SharedStreetsProtob\x06proto3')
 )
 
 _ROADCLASS = _descriptor.EnumDescriptor(
@@ -68,8 +68,8 @@ _ROADCLASS = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1366,
-  serialized_end=1503,
+  serialized_start=1395,
+  serialized_end=1532,
 )
 _sym_db.RegisterEnumDescriptor(_ROADCLASS)
 
@@ -126,8 +126,8 @@ _SHAREDSTREETSREFERENCE_FORMOFWAY = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1072,
-  serialized_end=1220,
+  serialized_start=1101,
+  serialized_end=1249,
 )
 _sym_db.RegisterEnumDescriptor(_SHAREDSTREETSREFERENCE_FORMOFWAY)
 
@@ -288,6 +288,13 @@ _WAYSECTION = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='WaySection.name', index=6,
+      number=7, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -300,8 +307,8 @@ _WAYSECTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=190,
-  serialized_end=315,
+  serialized_start=191,
+  serialized_end=330,
 )
 
 
@@ -319,6 +326,13 @@ _OSMMETADATA = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='name', full_name='OSMMetadata.name', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -331,8 +345,8 @@ _OSMMETADATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=317,
-  serialized_end=364,
+  serialized_start=332,
+  serialized_end=393,
 )
 
 
@@ -376,8 +390,8 @@ _SHAREDSTREETSMETADATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=366,
-  serialized_end=479,
+  serialized_start=395,
+  serialized_end=508,
 )
 
 
@@ -449,8 +463,8 @@ _SHAREDSTREETSGEOMETRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=482,
-  serialized_end=672,
+  serialized_start=511,
+  serialized_end=701,
 )
 
 
@@ -524,8 +538,8 @@ _LOCATIONREFERENCE = _descriptor.Descriptor(
       name='distanceToNextRef_present', full_name='LocationReference.distanceToNextRef_present',
       index=2, containing_type=None, fields=[]),
   ],
-  serialized_start=675,
-  serialized_end=908,
+  serialized_start=704,
+  serialized_end=937,
 )
 
 
@@ -577,8 +591,8 @@ _SHAREDSTREETSREFERENCE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=911,
-  serialized_end=1220,
+  serialized_start=940,
+  serialized_end=1249,
 )
 
 
@@ -643,8 +657,8 @@ _SHAREDSTREETSINTERSECTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1223,
-  serialized_end=1363,
+  serialized_start=1252,
+  serialized_end=1392,
 )
 
 _GISMETADATA.fields_by_name['sections'].message_type = _GISSECTIONMETADATA
