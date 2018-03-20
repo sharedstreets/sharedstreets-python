@@ -13,10 +13,10 @@ def respond_locally(url, request):
 
 class TestTile (unittest.TestCase):
 
-    def test_iter_objects_intersection_20180312(self):
+    def test_iter_objects_20180312_intersection(self):
         
         with httmock.HTTMock(respond_locally):
-            intersections = tile.iter_objects('http://example.com/intersection-20180312.pbf',
+            intersections = tile.iter_objects('http://example.com/20180312-intersection.pbf',
                 tile.data_classes['intersection'])
             i1, i2, i3 = list(intersections)
         
@@ -29,10 +29,10 @@ class TestTile (unittest.TestCase):
         self.assertEqual(i3.id, '81966cd8b3352f5b819009bffb0ff6c1')
         self.assertEqual((i3.lon, i3.lat), (-122.2876097, 37.8022963))
 
-    def test_iter_objects_geometry_20180312(self):
+    def test_iter_objects_20180312_geometry(self):
         
         with httmock.HTTMock(respond_locally):
-            geometries = tile.iter_objects('http://example.com/geometry-20180312.pbf',
+            geometries = tile.iter_objects('http://example.com/20180312-geometry.pbf',
                 tile.data_classes['geometry'])
             g1, g2, g3 = list(geometries)
         
@@ -48,10 +48,10 @@ class TestTile (unittest.TestCase):
         self.assertEqual(g3.lonlats[0:2], [-122.28428740000001, 37.827691900000005])
         self.assertEqual(len(g3.lonlats), 16)
 
-    def test_iter_objects_reference_20180312(self):
+    def test_iter_objects_20180312_reference(self):
         
         with httmock.HTTMock(respond_locally):
-            references = tile.iter_objects('http://example.com/reference-20180312.pbf',
+            references = tile.iter_objects('http://example.com/20180312-reference.pbf',
                 tile.data_classes['reference'])
             r1, r2, r3 = list(references)
         
@@ -73,10 +73,10 @@ class TestTile (unittest.TestCase):
         self.assertEqual(r3.locationReferences[0].intersectionId, '988b0c91439ae6663ddc2b0d4808185c')
         self.assertEqual(r3.locationReferences[1].intersectionId, 'd4715dff9b7de5b5dcd107d127f9ffd2')
 
-    def test_iter_objects_metadata_20180312(self):
+    def test_iter_objects_20180312_metadata(self):
         
         with httmock.HTTMock(respond_locally):
-            metadata = tile.iter_objects('http://example.com/metadata-20180312.pbf',
+            metadata = tile.iter_objects('http://example.com/20180312-metadata.pbf',
                 tile.data_classes['metadata'])
             m1, m2, m3 = list(metadata)
         
@@ -95,10 +95,10 @@ class TestTile (unittest.TestCase):
         self.assertEqual(m3.osmMetadata.waySections[0].wayId, 11162465)
         self.assertEqual(m3.osmMetadata.name, 'West MacArthur Boulevard')
     
-    def test_iter_objects_intersection_20180307(self):
+    def test_iter_objects_20180307_intersection(self):
         
         with httmock.HTTMock(respond_locally):
-            intersections = tile.iter_objects('http://example.com/intersection-20180307.pbf',
+            intersections = tile.iter_objects('http://example.com/20180307-intersection.pbf',
                 tile.data_classes['intersection'])
             i1, i2, i3 = list(intersections)
         
@@ -111,10 +111,10 @@ class TestTile (unittest.TestCase):
         self.assertEqual(i3.id, '80e533ecdcc667e37c9473c4b6fdb03d')
         self.assertEqual((i3.lon, i3.lat), (-122.28473890000001, 37.840128500000006))
 
-    def test_iter_objects_geometry_20180307(self):
+    def test_iter_objects_20180307_geometry(self):
         
         with httmock.HTTMock(respond_locally):
-            geometries = tile.iter_objects('http://example.com/geometry-20180307.pbf',
+            geometries = tile.iter_objects('http://example.com/20180307-geometry.pbf',
                 tile.data_classes['geometry'])
             g1, g2, g3 = list(geometries)
         
@@ -130,10 +130,10 @@ class TestTile (unittest.TestCase):
         self.assertEqual(g3.lonlats[0:2], [-122.25996420000001, 37.853876400000004])
         self.assertEqual(len(g3.lonlats), 6)
 
-    def test_iter_objects_reference_20180307(self):
+    def test_iter_objects_20180307_reference(self):
         
         with httmock.HTTMock(respond_locally):
-            references = tile.iter_objects('http://example.com/reference-20180307.pbf',
+            references = tile.iter_objects('http://example.com/20180307-reference.pbf',
                 tile.data_classes['reference'])
             r1, r2, r3 = list(references)
         
@@ -155,10 +155,10 @@ class TestTile (unittest.TestCase):
         self.assertEqual(r3.locationReferences[0].intersectionId, '38d5bb092bc572bd305a7812f0c8c0bf')
         self.assertEqual(r3.locationReferences[1].intersectionId, '0ad982f6c3e46b256115742f49da8da5')
 
-    def test_iter_objects_metadata_20180307(self):
+    def test_iter_objects_20180307_metadata(self):
         
         with httmock.HTTMock(respond_locally):
-            metadata = tile.iter_objects('http://example.com/metadata-20180307.pbf',
+            metadata = tile.iter_objects('http://example.com/20180307-metadata.pbf',
                 tile.data_classes['metadata'])
             m1, m2, m3 = list(metadata)
         
@@ -177,7 +177,7 @@ class TestTile (unittest.TestCase):
     def test_is_inside(self):
         
         with httmock.HTTMock(respond_locally):
-            geometries = tile.iter_objects('http://example.com/geometry-20180307.pbf',
+            geometries = tile.iter_objects('http://example.com/20180307-geometry.pbf',
                 tile.data_classes['geometry'])
             
             # 11th Street between Castro & MLK
