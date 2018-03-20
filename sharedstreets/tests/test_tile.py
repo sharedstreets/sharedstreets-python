@@ -13,6 +13,22 @@ def respond_locally(url, request):
 
 class TestTile (unittest.TestCase):
 
+    def test_iter_objects_intersection_20180312(self):
+        
+        with httmock.HTTMock(respond_locally):
+            intersections = tile.iter_objects('http://example.com/intersection-20180312.pbf',
+                tile.data_classes['intersection'])
+            i1, i2, i3 = list(intersections)
+        
+        self.assertEqual(i1.id, '80ff395c936bb42f328b1eb872174ea9')
+        self.assertEqual((i1.lon, i1.lat), (-122.26048920000001, 37.8110133))
+
+        self.assertEqual(i2.id, '81b8be7e93822aa8aec950aec959bfd8')
+        self.assertEqual((i2.lon, i2.lat), (-122.2730403, 37.8311603))
+
+        self.assertEqual(i3.id, '81966cd8b3352f5b819009bffb0ff6c1')
+        self.assertEqual((i3.lon, i3.lat), (-122.2876097, 37.8022963))
+
     def test_iter_objects_geometry_20180312(self):
         
         with httmock.HTTMock(respond_locally):
@@ -32,10 +48,10 @@ class TestTile (unittest.TestCase):
         self.assertEqual(g3.lonlats[0:2], [-122.28428740000001, 37.827691900000005])
         self.assertEqual(len(g3.lonlats), 16)
 
-    def test_iter_objects_intersection(self):
+    def test_iter_objects_intersection_20180307(self):
         
         with httmock.HTTMock(respond_locally):
-            intersections = tile.iter_objects('http://example.com/intersection.pbf',
+            intersections = tile.iter_objects('http://example.com/intersection-20180307.pbf',
                 tile.data_classes['intersection'])
             i1, i2, i3 = list(intersections)
         
@@ -48,7 +64,7 @@ class TestTile (unittest.TestCase):
         self.assertEqual(i3.id, '80e533ecdcc667e37c9473c4b6fdb03d')
         self.assertEqual((i3.lon, i3.lat), (-122.28473890000001, 37.840128500000006))
 
-    def test_iter_objects_geometry(self):
+    def test_iter_objects_geometry_20180307(self):
         
         with httmock.HTTMock(respond_locally):
             geometries = tile.iter_objects('http://example.com/geometry-20180307.pbf',
