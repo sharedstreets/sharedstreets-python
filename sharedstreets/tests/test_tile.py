@@ -73,6 +73,28 @@ class TestTile (unittest.TestCase):
         self.assertEqual(r3.locationReferences[0].intersectionId, '988b0c91439ae6663ddc2b0d4808185c')
         self.assertEqual(r3.locationReferences[1].intersectionId, 'd4715dff9b7de5b5dcd107d127f9ffd2')
 
+    def test_iter_objects_metadata_20180312(self):
+        
+        with httmock.HTTMock(respond_locally):
+            metadata = tile.iter_objects('http://example.com/metadata-20180312.pbf',
+                tile.data_classes['metadata'])
+            m1, m2, m3 = list(metadata)
+        
+        self.assertEqual(m1.geometryId, '80832506185371acf24df519ce271d31')
+        self.assertEqual(len(m1.osmMetadata.waySections), 1)
+        self.assertEqual(m1.osmMetadata.waySections[0].wayId, 6346743)
+        self.assertEqual(m1.osmMetadata.name, 'Carleton Street')
+        
+        self.assertEqual(m2.geometryId, '80a8a7c120332bfb679f877472c9c18d')
+        self.assertEqual(len(m2.osmMetadata.waySections), 1)
+        self.assertEqual(m2.osmMetadata.waySections[0].wayId, 405302258)
+        self.assertEqual(m2.osmMetadata.name, '')
+        
+        self.assertEqual(m3.geometryId, '82b5776e9fcce1c64a431a14bd59b15d')
+        self.assertEqual(len(m3.osmMetadata.waySections), 1)
+        self.assertEqual(m3.osmMetadata.waySections[0].wayId, 11162465)
+        self.assertEqual(m3.osmMetadata.name, 'West MacArthur Boulevard')
+    
     def test_iter_objects_intersection_20180307(self):
         
         with httmock.HTTMock(respond_locally):
@@ -133,10 +155,10 @@ class TestTile (unittest.TestCase):
         self.assertEqual(r3.locationReferences[0].intersectionId, '38d5bb092bc572bd305a7812f0c8c0bf')
         self.assertEqual(r3.locationReferences[1].intersectionId, '0ad982f6c3e46b256115742f49da8da5')
 
-    def test_iter_objects_metadata(self):
+    def test_iter_objects_metadata_20180307(self):
         
         with httmock.HTTMock(respond_locally):
-            metadata = tile.iter_objects('http://example.com/metadata.pbf',
+            metadata = tile.iter_objects('http://example.com/metadata-20180307.pbf',
                 tile.data_classes['metadata'])
             m1, m2, m3 = list(metadata)
         
