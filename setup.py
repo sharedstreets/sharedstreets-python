@@ -25,6 +25,7 @@ setup(
         'uritemplate==3.0.0',
         'requests==2.18.4',
         'flask==0.12.2',
+        'Flask-Cors==3.0.3',
         'gunicorn==19.7.1',
         'httmock==1.2.6',
         'mock==2.0.0',
