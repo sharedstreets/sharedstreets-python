@@ -93,9 +93,16 @@ def get_tile(zoom, x, y):
     
     logger.debug('{} references'.format(len(references)))
     
-    return geometries, intersections, references
+    # Get metadata attached to one of the filtered geometries
+    md_data_url = uritemplate.expand(data_url_template, layer='metadata', **data_zxy)
+    metadata = {md.geometryId: md for md in iter_objects(md_data_url,
+        data_classes['metadata']) if md.geometryId in geometries}
+    
+    logger.debug('{} metadata'.format(len(metadata)))
+    
+    return geometries, intersections, references, metadata
 
-def geometry_feature(geometry):
+def geometry_feature(geometry, metadata):
     '''
     '''
     return {
@@ -109,6 +116,7 @@ def geometry_feature(geometry):
             'backReferenceId': truncate_id(geometry.backReferenceId),
             'endIntersectionId': truncate_id(geometry.toIntersectionId),
             'roadClass': geometry.roadClass,
+            'osmName': str(metadata.osmMetadata.name),
             },
         'geometry': {
             'type': 'LineString',
@@ -168,13 +176,13 @@ def reference_feature(reference):
             ]
         }
 
-def make_geojson(geometries, intersections, references):
+def make_geojson(geometries, intersections, references, metadata):
     '''
     '''
     geojson = dict(type='FeatureCollection', features=[], references=[])
     
     for geometry in geometries.values():
-        geojson['features'].append(geometry_feature(geometry))
+        geojson['features'].append(geometry_feature(geometry, metadata[geometry.id]))
         #break
     
     for intersection in intersections.values():
@@ -194,6 +202,6 @@ parser.add_argument('y', type=int, help='Tile Y coordinate')
 
 def main():
     args = parser.parse_args()
-    geometries, intersections, references = get_tile(args.zoom, args.x, args.y)
-    geojson = make_geojson(geometries, intersections, references)
+    geometries, intersections, references, metadata = get_tile(args.zoom, args.x, args.y)
+    geojson = make_geojson(geometries, intersections, references, metadata)
     print(json.dumps(geojson, indent=2))

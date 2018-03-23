@@ -208,8 +208,9 @@ class TestTile (unittest.TestCase):
         everything.lonlats = [-122.27120, 37.80437, -122.27182, 37.80598]
         iter_objects.return_value = [everything, everything]
     
-        geometries, intersections, references = tile.get_tile(16, 10509, 25324)
+        geometries, intersections, references, metadata = tile.get_tile(16, 10509, 25324)
         
         self.assertEqual(len(geometries), 1)
         self.assertEqual(len(intersections), 1)
         self.assertEqual(len(references), 1)
+        self.assertEqual(len(metadata), 1)
