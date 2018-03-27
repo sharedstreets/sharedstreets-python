@@ -137,8 +137,14 @@ def intersection_feature(intersection):
         'id': truncate_id(intersection.id),
         'properties': {
             'id': truncate_id(intersection.id),
+
+            # Deprecated names
             'inboundSegmentIds': list(map(truncate_id, intersection.inboundReferenceIds)),
             'outboundSegmentIds': list(map(truncate_id, intersection.outboundReferenceIds)),
+            
+            # Standard names
+            'inboundReferenceIds': list(map(truncate_id, intersection.inboundReferenceIds)),
+            'outboundReferenceIds': list(map(truncate_id, intersection.outboundReferenceIds)),
             },
         'geometry': {
             'type': 'Point',
@@ -161,17 +167,29 @@ def reference_feature(reference):
                 'sequence': 0,
                 'intersectionId': truncate_id(LR0.intersectionId),
                 'distanceToNextRef': LR0.distanceToNextRef,
+                'point': [round_coord(LR0.lon), round_coord(LR0.lat)],
+
+                # Deprecated names
                 'bearing': LR0.inboundBearing,
                 'outBearing': LR0.outboundBearing,
-                'point': [round_coord(LR0.lon), round_coord(LR0.lat)]
+
+                # Standard names
+                'inboundBearing': LR0.inboundBearing,
+                'outboundBearing': LR0.outboundBearing,
                 },
             {
                 'sequence': 1,
                 'intersectionId': truncate_id(LR1.intersectionId),
                 'distanceToNextRef': None,
+                'point': [round_coord(LR1.lon), round_coord(LR1.lat)],
+
+                # Deprecated names
                 'bearing': None,
                 'outBearing': None,
-                'point': [round_coord(LR1.lon), round_coord(LR1.lat)]
+
+                # Standard names
+                'inboundBearing': None,
+                'outboundBearing': None,
                 },
             ]
         }
