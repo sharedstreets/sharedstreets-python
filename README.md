@@ -26,4 +26,15 @@ Python implementation of [SharedStreets Reference System](https://github.com/sha
 
         gunicorn sharedstreets.webapp:app
 
-## API
+## Protobufs
+
+Current `.proto` files can can be found at
+[sharedstreets/sharedstreets-ref-system](https://github.com/sharedstreets/sharedstreets-ref-system/tree/master/proto).
+
+[Install `protoc`](https://github.com/google/protobuf) and
+[follow Python directions](https://developers.google.com/protocol-buffers/docs/reference/python-generated#invocation)
+to regenerate `sharedstreets/sharedstreets_pb2.py` if necessary:
+
+    protoc --proto_path=sharedstreets-ref-system/proto \
+        --python_out=sharedstreets-python/sharedstreets \
+        sharedstreets-ref-system/proto/sharedstreets.proto
