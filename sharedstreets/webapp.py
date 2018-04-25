@@ -1,7 +1,8 @@
-import flask, argparse
+import flask, flask_cors, argparse
 from . import tile
 
 app = flask.Flask(__name__)
+flask_cors.CORS(app)
 
 @app.route('/')
 def get_index():
