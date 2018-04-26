@@ -17,7 +17,7 @@ script:
 deploy:
   on:
     branch: migurski/deploy-to-pypi
-  condition: $TRAVIS_PYTHON_VERSION = 3.6
+    condition: $TRAVIS_PYTHON_VERSION = 3.6
   provider: pypi
   user: "migurski"
   password:
