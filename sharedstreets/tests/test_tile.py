@@ -13,6 +13,15 @@ def respond_locally(url, request):
 
 class TestTile (unittest.TestCase):
 
+    def test_iter_objects_http404_intersection(self):
+        
+        with httmock.HTTMock(respond_locally):
+            intersections = tile.iter_objects('http://example.com/http404-intersection.pbf',
+                tile.data_classes['intersection'])
+            i = list(intersections)
+        
+        self.assertEqual(len(i), 0)
+
     def test_iter_objects_20180312_intersection(self):
         
         with httmock.HTTMock(respond_locally):
