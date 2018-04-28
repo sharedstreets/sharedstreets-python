@@ -33,6 +33,10 @@ def iter_objects(url, DataClass):
     response, position = requests.get(url), 0
     logger.debug('Got {} bytes: {}'.format(len(response.content), repr(response.content[:32])))
 
+    if response.status_code not in range(200, 299):
+        logger.debug('Got HTTP {}'.format(response.status_code))
+        return
+
     while position < len(response.content):
         message_length, new_position = _DecodeVarint32(response.content, position)
         position = new_position
