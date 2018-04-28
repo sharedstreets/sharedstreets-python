@@ -6,7 +6,7 @@ from . import sharedstreets_pb2
 logger = logging.getLogger(__name__)
 
 # https://github.com/sharedstreets/sharedstreets-ref-system/issues/16
-data_url_template, data_zoom = 'https://tiles.sharedstreets.io/osm/planet-180312/{z}-{x}-{y}.{layer}.6.pbf', 12
+DATA_URL_TEMPLATE, DATA_ZOOM = 'https://tiles.sharedstreets.io/osm/planet-180312/{z}-{x}-{y}.{layer}.6.pbf', 12
 data_classes = {
     'reference': sharedstreets_pb2.SharedStreetsReference,
     'intersection': sharedstreets_pb2.SharedStreetsIntersection,
@@ -16,6 +16,15 @@ data_classes = {
 
 # Used for Mercator projection and tile space
 OSM = ModestMaps.OpenStreetMap.Provider()
+
+class Tile:
+    ''' Container for lists of SharedStreets geometries, intersections, references, and metadata.
+    '''
+    def __init__(self, geometries, intersections, references, metadata):
+        self.geometries = geometries
+        self.intersections = intersections
+        self.references = references
+        self.metadata = metadata
 
 def truncate_id(id):
     ''' Truncate SharedStreets hash to save space.
@@ -66,12 +75,24 @@ def is_inside(southwest, northeast, geometry):
     
     return True
 
-def get_tile(zoom, x, y):
-    ''' Get geometries, intersections, and references inside a tile.
+def get_tile(zoom, x, y, data_url_template=None):
+    ''' Get a single Tile instance.
+    
+        zoom, x, y: Web mercator tile coordinates using OpenStreetMap convention.
+        
+            https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Zoom_levels
+    
+        data_url_template: RFC 6570 URI template for upstream protobuf tiles
+            with z, x, y, and layer expressions. Default to DATA_URL_TEMPLATE.
+            
+            https://tools.ietf.org/html/rfc6570#section-2.2)
     '''
+    if data_url_template is None:
+        data_url_template = DATA_URL_TEMPLATE
+    
     # Define lat/lon for filtered area
     tile_coord = ModestMaps.Core.Coordinate(y, x, zoom)
-    data_coord = tile_coord.zoomTo(data_zoom).container()
+    data_coord = tile_coord.zoomTo(DATA_ZOOM).container()
     tile_sw = OSM.coordinateLocation(tile_coord.down())
     tile_ne = OSM.coordinateLocation(tile_coord.right())
     data_zxy = dict(z=data_coord.zoom, x=data_coord.column, y=data_coord.row)
@@ -109,21 +130,21 @@ def get_tile(zoom, x, y):
     
     logger.debug('{} metadata'.format(len(metadata)))
     
-    return geometries, intersections, references, metadata
+    return Tile(geometries, intersections, references, metadata)
 
-def geometry_feature(geometry, metadata):
+def geometry_feature(geometry, metadata, id_length):
     '''
     '''
     return {
         'type': 'Feature',
         'role': 'SharedStreets:Geometry',
-        'id': truncate_id(geometry.id),
+        'id': geometry.id[:id_length],
         'properties': {
-            'id': truncate_id(geometry.id),
-            'forwardReferenceId': truncate_id(geometry.forwardReferenceId),
-            'startIntersectionId': truncate_id(geometry.fromIntersectionId),
-            'backReferenceId': truncate_id(geometry.backReferenceId),
-            'endIntersectionId': truncate_id(geometry.toIntersectionId),
+            'id': geometry.id[:id_length],
+            'forwardReferenceId': geometry.forwardReferenceId[:id_length],
+            'startIntersectionId': geometry.fromIntersectionId[:id_length],
+            'backReferenceId': geometry.backReferenceId[:id_length],
+            'endIntersectionId': geometry.toIntersectionId[:id_length],
             'roadClass': geometry.roadClass,
             'osmName': str(metadata.osmMetadata.name),
             },
@@ -137,18 +158,18 @@ def geometry_feature(geometry, metadata):
             }
         }
 
-def intersection_feature(intersection):
+def intersection_feature(intersection, id_length):
     '''
     '''
     return {
         'type': 'Feature',
         'role': 'SharedStreets:Intersection',
-        'id': truncate_id(intersection.id),
+        'id': intersection.id[:id_length],
         'properties': {
-            'id': truncate_id(intersection.id),
+            'id': intersection.id[:id_length],
 
-            'inboundReferenceIds': list(map(truncate_id, intersection.inboundReferenceIds)),
-            'outboundReferenceIds': list(map(truncate_id, intersection.outboundReferenceIds)),
+            'inboundReferenceIds': [id[:id_length] for id in intersection.inboundReferenceIds],
+            'outboundReferenceIds': [id[:id_length] for id in intersection.outboundReferenceIds],
             },
         'geometry': {
             'type': 'Point',
@@ -156,20 +177,20 @@ def intersection_feature(intersection):
             }
         }
 
-def reference_feature(reference):
+def reference_feature(reference, id_length):
     '''
     '''
     LR0, LR1 = reference.locationReferences
     
     return {
         'role': 'SharedStreets:Reference',
-        'id': truncate_id(reference.id),
-        'geometryId': truncate_id(reference.geometryId),
+        'id': reference.id[:id_length],
+        'geometryId': reference.geometryId[:id_length],
         'formOfWay': reference.formOfWay,
         'locationReferences': [
             {
                 'sequence': 0,
-                'intersectionId': truncate_id(LR0.intersectionId),
+                'intersectionId': LR0.intersectionId[:id_length],
                 'distanceToNextRef': LR0.distanceToNextRef,
                 'point': [round_coord(LR0.lon), round_coord(LR0.lat)],
 
@@ -178,7 +199,7 @@ def reference_feature(reference):
                 },
             {
                 'sequence': 1,
-                'intersectionId': truncate_id(LR1.intersectionId),
+                'intersectionId': LR1.intersectionId[:id_length],
                 'distanceToNextRef': None,
                 'point': [round_coord(LR1.lon), round_coord(LR1.lat)],
 
@@ -188,21 +209,26 @@ def reference_feature(reference):
             ]
         }
 
-def make_geojson(geometries, intersections, references, metadata):
-    '''
+def make_geojson(tile, id_length=12):
+    ''' Get a GeoJSON dictionary for a geographic tile.
+    
+        tile: Tile instance with lists of SharedStreets entities.
+        
+        id_length: Desired length of SharedStreets ID strings. Normally 32-char
+            MD5 hashes, these can be truncated to conserve storage. Default 12.
     '''
     geojson = dict(type='FeatureCollection', features=[], references=[])
     
-    for geometry in geometries.values():
-        geojson['features'].append(geometry_feature(geometry, metadata[geometry.id]))
+    for geometry in tile.geometries.values():
+        geojson['features'].append(geometry_feature(geometry, tile.metadata[geometry.id], id_length))
         #break
     
-    for intersection in intersections.values():
-        geojson['features'].append(intersection_feature(intersection))
+    for intersection in tile.intersections.values():
+        geojson['features'].append(intersection_feature(intersection, id_length))
         #break
     
-    for reference in references.values():
-        geojson['references'].append(reference_feature(reference))
+    for reference in tile.references.values():
+        geojson['references'].append(reference_feature(reference, id_length))
         #break
     
     return geojson
@@ -214,6 +240,5 @@ parser.add_argument('y', type=int, help='Tile Y coordinate')
 
 def main():
     args = parser.parse_args()
-    geometries, intersections, references, metadata = get_tile(args.zoom, args.x, args.y)
-    geojson = make_geojson(geometries, intersections, references, metadata)
+    geojson = make_geojson(get_tile(args.zoom, args.x, args.y), id_length=16)
     print(json.dumps(geojson, indent=2))
