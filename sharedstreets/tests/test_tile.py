@@ -221,7 +221,8 @@ class TestTile (unittest.TestCase):
         self.assertFalse(tile.is_inside(sw3, ne, geometry))
     
     @mock.patch('sharedstreets.tile.iter_objects')
-    def test_get_tile(self, iter_objects):
+    @mock.patch('uritemplate.expand')
+    def test_get_tile(self, uri_expand, iter_objects):
     
         everything = mock.Mock()
         everything.id = 'everything'
@@ -232,7 +233,29 @@ class TestTile (unittest.TestCase):
     
         geometries, intersections, references, metadata = tile.get_tile(16, 10509, 25324)
         
+        self.assertEqual(len(uri_expand.mock_calls), 4)
+        for mock_call in uri_expand.mock_calls:
+            self.assertEqual(mock_call[1][0], tile.DATA_URL_TEMPLATE)
+        
         self.assertEqual(len(geometries), 1)
         self.assertEqual(len(intersections), 1)
         self.assertEqual(len(references), 1)
         self.assertEqual(len(metadata), 1)
+    
+    @mock.patch('sharedstreets.tile.iter_objects')
+    @mock.patch('uritemplate.expand')
+    def test_get_tile_alt_url(self, uri_expand, iter_objects):
+    
+        iter_objects.return_value = []
+    
+        geometries, intersections, references, metadata = tile.get_tile(16, 10509, 25324,
+            data_url_template='https://example.com/{z}-{x}-{y}.{layer}.pbf')
+        
+        self.assertEqual(len(uri_expand.mock_calls), 4)
+        for mock_call in uri_expand.mock_calls:
+            self.assertEqual(mock_call[1][0], 'https://example.com/{z}-{x}-{y}.{layer}.pbf')
+        
+        self.assertEqual(len(geometries), 0)
+        self.assertEqual(len(intersections), 0)
+        self.assertEqual(len(references), 0)
+        self.assertEqual(len(metadata), 0)

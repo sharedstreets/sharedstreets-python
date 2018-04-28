@@ -6,7 +6,7 @@ from . import sharedstreets_pb2
 logger = logging.getLogger(__name__)
 
 # https://github.com/sharedstreets/sharedstreets-ref-system/issues/16
-data_url_template, data_zoom = 'https://tiles.sharedstreets.io/osm/planet-180312/{z}-{x}-{y}.{layer}.6.pbf', 12
+DATA_URL_TEMPLATE, DATA_ZOOM = 'https://tiles.sharedstreets.io/osm/planet-180312/{z}-{x}-{y}.{layer}.6.pbf', 12
 data_classes = {
     'reference': sharedstreets_pb2.SharedStreetsReference,
     'intersection': sharedstreets_pb2.SharedStreetsIntersection,
@@ -66,12 +66,15 @@ def is_inside(southwest, northeast, geometry):
     
     return True
 
-def get_tile(zoom, x, y):
+def get_tile(zoom, x, y, data_url_template=None):
     ''' Get geometries, intersections, and references inside a tile.
     '''
+    if data_url_template is None:
+        data_url_template = DATA_URL_TEMPLATE
+    
     # Define lat/lon for filtered area
     tile_coord = ModestMaps.Core.Coordinate(y, x, zoom)
-    data_coord = tile_coord.zoomTo(data_zoom).container()
+    data_coord = tile_coord.zoomTo(DATA_ZOOM).container()
     tile_sw = OSM.coordinateLocation(tile_coord.down())
     tile_ne = OSM.coordinateLocation(tile_coord.right())
     data_zxy = dict(z=data_coord.zoom, x=data_coord.column, y=data_coord.row)
