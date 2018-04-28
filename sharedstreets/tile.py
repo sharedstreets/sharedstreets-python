@@ -1,5 +1,5 @@
 import argparse, itertools, sys, json, logging
-import ModestMaps.Core, ModestMaps.OpenStreetMap, uritemplate, requests
+import ModestMaps.Core, ModestMaps.OpenStreetMap, uritemplate, requests, google.protobuf.message
 from google.protobuf.internal.decoder import _DecodeVarint32
 from . import sharedstreets_pb2
 
@@ -33,15 +33,24 @@ def iter_objects(url, DataClass):
     response, position = requests.get(url), 0
     logger.debug('Got {} bytes: {}'.format(len(response.content), repr(response.content[:32])))
 
+    if response.status_code not in range(200, 299):
+        logger.debug('Got HTTP {}'.format(response.status_code))
+        return
+
     while position < len(response.content):
         message_length, new_position = _DecodeVarint32(response.content, position)
         position = new_position
         message = response.content[position:position+message_length]
         position += message_length
 
-        object = DataClass()
-        object.ParseFromString(message)
-        yield object
+        try:
+            object = DataClass()
+            object.ParseFromString(message)
+        except google.protobuf.message.DecodeError:
+            # Empty tile? Shrug.
+            continue
+        else:
+            yield object
 
 def is_inside(southwest, northeast, geometry):
     ''' Return True if the geometry bbox is inside a location pair bbox.

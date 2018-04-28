@@ -13,6 +13,28 @@ def respond_locally(url, request):
 
 class TestTile (unittest.TestCase):
 
+    def test_iter_objects_http404_intersection(self):
+    
+        def respond_404(url, request):
+            return httmock.response(404, b'<?xml version="1.0" encoding="UTF-8"?>\n<Error><Code>AccessDenied</Code><Message>Access Denied</Message><RequestId>...</RequestId><HostId>...</HostId></Error>')
+        
+        with httmock.HTTMock(respond_404):
+            intersections = tile.iter_objects('http://example.com/404.pbf',
+                tile.data_classes['intersection'])
+            i = list(intersections)
+        
+        self.assertEqual(len(i), 0)
+
+    def test_iter_objects_http200_badresponse(self):
+        
+        with httmock.HTTMock(respond_locally):
+            intersections = tile.iter_objects('http://example.com/http404-intersection.pbf',
+                tile.data_classes['intersection'])
+            i = list(intersections)
+        
+        # Behavior here is undefined, depending on Python/Protobuf version.
+        self.assertIn(len(i), (0, 1))
+
     def test_iter_objects_20180312_intersection(self):
         
         with httmock.HTTMock(respond_locally):
