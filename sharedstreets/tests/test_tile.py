@@ -32,7 +32,8 @@ class TestTile (unittest.TestCase):
                 tile.data_classes['intersection'])
             i = list(intersections)
         
-        self.assertEqual(len(i), 0)
+        # Behavior here is undefined, depending on Python/Protobuf version.
+        self.assertIn(len(i), (0, 1))
 
     def test_iter_objects_20180312_intersection(self):
         
