@@ -17,6 +17,15 @@ data_classes = {
 # Used for Mercator projection and tile space
 OSM = ModestMaps.OpenStreetMap.Provider()
 
+class Tile:
+    ''' Container for lists of SharedStreets geometries, intersections, references, and metadata.
+    '''
+    def __init__(self, geometries, intersections, references, metadata):
+        self.geometries = geometries
+        self.intersections = intersections
+        self.references = references
+        self.metadata = metadata
+
 def truncate_id(id):
     ''' Truncate SharedStreets hash to save space.
     '''
@@ -67,7 +76,7 @@ def is_inside(southwest, northeast, geometry):
     return True
 
 def get_tile(zoom, x, y, data_url_template=None):
-    ''' Get geometries, intersections, and references inside a tile.
+    ''' Get a single Tile instance.
     '''
     if data_url_template is None:
         data_url_template = DATA_URL_TEMPLATE
@@ -112,7 +121,7 @@ def get_tile(zoom, x, y, data_url_template=None):
     
     logger.debug('{} metadata'.format(len(metadata)))
     
-    return geometries, intersections, references, metadata
+    return Tile(geometries, intersections, references, metadata)
 
 def geometry_feature(geometry, metadata):
     '''
@@ -191,20 +200,20 @@ def reference_feature(reference):
             ]
         }
 
-def make_geojson(geometries, intersections, references, metadata):
+def make_geojson(tile):
     '''
     '''
     geojson = dict(type='FeatureCollection', features=[], references=[])
     
-    for geometry in geometries.values():
-        geojson['features'].append(geometry_feature(geometry, metadata[geometry.id]))
+    for geometry in tile.geometries.values():
+        geojson['features'].append(geometry_feature(geometry, tile.metadata[geometry.id]))
         #break
     
-    for intersection in intersections.values():
+    for intersection in tile.intersections.values():
         geojson['features'].append(intersection_feature(intersection))
         #break
     
-    for reference in references.values():
+    for reference in tile.references.values():
         geojson['references'].append(reference_feature(reference))
         #break
     
@@ -217,6 +226,5 @@ parser.add_argument('y', type=int, help='Tile Y coordinate')
 
 def main():
     args = parser.parse_args()
-    geometries, intersections, references, metadata = get_tile(args.zoom, args.x, args.y)
-    geojson = make_geojson(geometries, intersections, references, metadata)
+    geojson = make_geojson(get_tile(args.zoom, args.x, args.y))
     print(json.dumps(geojson, indent=2))

@@ -231,16 +231,16 @@ class TestTile (unittest.TestCase):
         everything.lonlats = [-122.27120, 37.80437, -122.27182, 37.80598]
         iter_objects.return_value = [everything, everything]
     
-        geometries, intersections, references, metadata = tile.get_tile(16, 10509, 25324)
+        T = tile.get_tile(16, 10509, 25324)
         
         self.assertEqual(len(uri_expand.mock_calls), 4)
         for mock_call in uri_expand.mock_calls:
             self.assertEqual(mock_call[1][0], tile.DATA_URL_TEMPLATE)
         
-        self.assertEqual(len(geometries), 1)
-        self.assertEqual(len(intersections), 1)
-        self.assertEqual(len(references), 1)
-        self.assertEqual(len(metadata), 1)
+        self.assertEqual(len(T.geometries), 1)
+        self.assertEqual(len(T.intersections), 1)
+        self.assertEqual(len(T.references), 1)
+        self.assertEqual(len(T.metadata), 1)
     
     @mock.patch('sharedstreets.tile.iter_objects')
     @mock.patch('uritemplate.expand')
@@ -248,14 +248,14 @@ class TestTile (unittest.TestCase):
     
         iter_objects.return_value = []
     
-        geometries, intersections, references, metadata = tile.get_tile(16, 10509, 25324,
+        T = tile.get_tile(16, 10509, 25324,
             data_url_template='https://example.com/{z}-{x}-{y}.{layer}.pbf')
         
         self.assertEqual(len(uri_expand.mock_calls), 4)
         for mock_call in uri_expand.mock_calls:
             self.assertEqual(mock_call[1][0], 'https://example.com/{z}-{x}-{y}.{layer}.pbf')
         
-        self.assertEqual(len(geometries), 0)
-        self.assertEqual(len(intersections), 0)
-        self.assertEqual(len(references), 0)
-        self.assertEqual(len(metadata), 0)
+        self.assertEqual(len(T.geometries), 0)
+        self.assertEqual(len(T.intersections), 0)
+        self.assertEqual(len(T.references), 0)
+        self.assertEqual(len(T.metadata), 0)

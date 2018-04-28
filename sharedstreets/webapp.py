@@ -10,7 +10,7 @@ def get_index():
 
 @app.route('/tile/<int:zoom>/<int:x>/<int:y>.geojson')
 def get_tile(zoom, x, y):
-    return flask.jsonify(tile.make_geojson(*tile.get_tile(zoom, x, y)))
+    return flask.jsonify(tile.make_geojson(tile.get_tile(zoom, x, y)))
 
 parser = argparse.ArgumentParser(description='Run a local SharedStreets tile webserver')
 
