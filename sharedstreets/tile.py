@@ -77,6 +77,15 @@ def is_inside(southwest, northeast, geometry):
 
 def get_tile(zoom, x, y, data_url_template=None):
     ''' Get a single Tile instance.
+    
+        zoom, x, y: Web mercator tile coordinates using OpenStreetMap convention.
+        
+            https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Zoom_levels
+    
+        data_url_template: RFC 6570 URI template for upstream protobuf tiles
+            with z, x, y, and layer expressions. Default to DATA_URL_TEMPLATE.
+            
+            https://tools.ietf.org/html/rfc6570#section-2.2)
     '''
     if data_url_template is None:
         data_url_template = DATA_URL_TEMPLATE
