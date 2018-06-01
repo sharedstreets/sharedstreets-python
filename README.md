@@ -51,6 +51,6 @@ Current `.proto` files can can be found at
 [follow Python directions](https://developers.google.com/protocol-buffers/docs/reference/python-generated#invocation)
 to regenerate `sharedstreets/sharedstreets_pb2.py` if necessary:
 
-    protoc --proto_path=sharedstreets-ref-system/proto \
-        --python_out=sharedstreets-python/sharedstreets \
+    protoc -I=sharedstreets-ref-system/proto/ \
+        --python_out=sharedstreets/ \
         sharedstreets-ref-system/proto/sharedstreets.proto
