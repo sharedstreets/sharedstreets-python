@@ -95,7 +95,7 @@ def get_tile(zoom, x, y, data_url_template=None):
     data_coord = tile_coord.zoomTo(DATA_ZOOM).container()
     tile_sw = OSM.coordinateLocation(tile_coord.down())
     tile_ne = OSM.coordinateLocation(tile_coord.right())
-    data_zxy = dict(z=data_coord.zoom, x=data_coord.column, y=data_coord.row)
+    data_zxy = dict(z=int(data_coord.zoom), x=int(data_coord.column), y=int(data_coord.row))
     
     logger.debug((tile_coord, data_coord, tile_sw, tile_ne))
     
