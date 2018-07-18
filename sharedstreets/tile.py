@@ -95,7 +95,7 @@ def get_tile(zoom, x, y, data_url_template=None):
     data_coord = tile_coord.zoomTo(DATA_ZOOM).container()
     tile_sw = OSM.coordinateLocation(tile_coord.down())
     tile_ne = OSM.coordinateLocation(tile_coord.right())
-    data_zxy = dict(z=data_coord.zoom, x=data_coord.column, y=data_coord.row)
+    data_zxy = dict(z=int(data_coord.zoom), x=int(data_coord.column), y=int(data_coord.row))
     
     logger.debug((tile_coord, data_coord, tile_sw, tile_ne))
     
@@ -209,7 +209,7 @@ def reference_feature(reference, id_length):
             ]
         }
 
-def make_geojson(tile, id_length=12):
+def make_geojson(tile, id_length=32):
     ''' Get a GeoJSON dictionary for a geographic tile.
     
         tile: Tile instance with lists of SharedStreets entities.
@@ -240,5 +240,5 @@ parser.add_argument('y', type=int, help='Tile Y coordinate')
 
 def main():
     args = parser.parse_args()
-    geojson = make_geojson(get_tile(args.zoom, args.x, args.y), id_length=16)
+    geojson = make_geojson(get_tile(args.zoom, args.x, args.y), id_length=32)
     print(json.dumps(geojson, indent=2))
