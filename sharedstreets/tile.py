@@ -209,7 +209,7 @@ def reference_feature(reference, id_length):
             ]
         }
 
-def make_geojson(tile, id_length=12):
+def make_geojson(tile, id_length=32):
     ''' Get a GeoJSON dictionary for a geographic tile.
     
         tile: Tile instance with lists of SharedStreets entities.
@@ -240,5 +240,5 @@ parser.add_argument('y', type=int, help='Tile Y coordinate')
 
 def main():
     args = parser.parse_args()
-    geojson = make_geojson(get_tile(args.zoom, args.x, args.y), id_length=16)
+    geojson = make_geojson(get_tile(args.zoom, args.x, args.y), id_length=32)
     print(json.dumps(geojson, indent=2))
