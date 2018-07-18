@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name = 'sharedstreets',
-    version = '0.2.0',
+    version = '0.2.1',
     author = 'Kevin Webb, Denis Carriere, Michal Migurski',
     description = 'Python implementation of SharedStreets Reference System',
     license = 'MIT',
