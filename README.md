@@ -1,7 +1,5 @@
 # SharedStreets (Python)
 
-🚧WIP -- commits/comments welcome! 🚧
-
 Python implementation of [SharedStreets Reference System](https://github.com/sharedstreets/sharedstreets-ref-system).
 
 ## Install
@@ -15,6 +13,8 @@ Python implementation of [SharedStreets Reference System](https://github.com/sha
         sharedstreets-get-tile 16 10509 25324 > 16-10509-25324.geojson
 
 ## Use
+
+#### GeoJSON Functions
 
 -   Retrieve a tile and convert to GeoJSON in Python.
 
@@ -30,22 +30,25 @@ Python implementation of [SharedStreets Reference System](https://github.com/sha
 
         gunicorn sharedstreets.webapp:app
 
--   Read speed data from PBF encoded speed tiles. `flatten_weekly_speed_histogram` returns an array of arrays representing individual histogram bins with the structure `[sharedstreets_referenceId, period_hour_of_week, bin_kmh, observation_count]`: 
+### Analysis functions
+
+#### Speed Data
+Read speed data from PBF encoded speed tiles. `flatten_weekly_speed_histogram` returns an array of arrays representing individual histogram bins with the structure `[sharedstreets_referenceId, period_hour_of_week, bin_kmh, observation_count]`: 
 
         import sharedstreets.speeds
         with open('12-946-1650.speeds.pbf', 'rb') as file:
             fileContent = file.read()
             observations = speeds.flatten_weekly_speed_histogram(fileContent)
             print(observations)
-
--   Read linear references from PBF encoded event tiles. `flatten_binned_events` returns an array of arrays representing individual event counts for linear bins `[sharedstreets_referenceId, reference_length, number_of_bins, bin_position, data_type, observation_count, observation_value]`: 
+            
+#### Binned Linear Data
+Read linear references from PBF encoded event tiles. `flatten_binned_events` returns an array of arrays representing individual event counts for linear bins `[sharedstreets_referenceId, reference_length, number_of_bins, bin_position, data_type, observation_count, observation_value]`: 
 
         import sharedstreets.linear_references
         with open('12-946-1650.events.pbf', 'rb') as file:
             fileContent = file.read()
             observations = linear_references.flatten_binned_events(fileContent)
             print(observations)
-            self.assertEqual(len(observations), 89)
 
 ## Develop
 
