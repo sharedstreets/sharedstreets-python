@@ -30,7 +30,7 @@ Python implementation of [SharedStreets Reference System](https://github.com/sha
 
         gunicorn sharedstreets.webapp:app
 
-### Analysis functions
+### Analysis Functions
 
 #### Speed Data
 Read speed data from PBF encoded speed tiles. `flatten_weekly_speed_histogram` returns an array of arrays representing individual histogram bins with the structure `[sharedstreets_referenceId, period_hour_of_week, bin_kmh, observation_count]`: 
