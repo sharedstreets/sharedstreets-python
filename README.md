@@ -30,7 +30,7 @@ Python implementation of [SharedStreets Reference System](https://github.com/sha
 
         gunicorn sharedstreets.webapp:app
 
--   Read speed data from PBF encoded speed tiles. `flatten_weekly_speed_histogram` returns an array of arrays representing individual histogram bins with the structure `[sharedstreets_referenceId, period_hour_of_week, bin_kmh, observation_count`: 
+-   Read speed data from PBF encoded speed tiles. `flatten_weekly_speed_histogram` returns an array of arrays representing individual histogram bins with the structure `[sharedstreets_referenceId, period_hour_of_week, bin_kmh, observation_count]`: 
 
         import sharedstreets.speeds
         with open('12-946-1650.speeds.pbf', 'rb') as file:
@@ -38,7 +38,7 @@ Python implementation of [SharedStreets Reference System](https://github.com/sha
             observations = speeds.flatten_weekly_speed_histogram(fileContent)
             print(observations)
 
--   Read linear references from PBF encoded event tiles. `flatten_binned_events` returns an array of arrays representing individual event counts for linear bins `[sharedstreets_referenceId, referenceLength, numberOfBins, binPosition, dataType, observationCount, observationValue`: 
+-   Read linear references from PBF encoded event tiles. `flatten_binned_events` returns an array of arrays representing individual event counts for linear bins `[sharedstreets_referenceId, reference_length, number_of_bins, bin_position, data_type, observation_count, observation_value]`: 
 
         import sharedstreets.linear_references
         with open('12-946-1650.events.pbf', 'rb') as file:
