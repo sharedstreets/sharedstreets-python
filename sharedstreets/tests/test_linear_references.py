@@ -15,11 +15,9 @@ def respond_locally(url, request):
 class TestTile (unittest.TestCase):
 
     def test_linear_references(self):
-        
-        speedObservations = []
-        
+
         with open('12-946-1650.events.pbf', 'rb') as file:
             fileContent = file.read()
             observations = linear_references.flatten_binned_events(fileContent)
             print(observations)
-            # self.assertEqual(len(observations), 124)
+            self.assertEqual(len(observations), 89)

@@ -21,6 +21,6 @@ def flatten_binned_events(tileContent):
             linearBin = item.binnedPeriodicData[binPos]
             for periodPos in range(0, len(linearBin.bins)):
                 binData = linearBin.bins[periodPos]
-                binnedObservations.append([item.referenceId, item.numberOfBins, binPos+1, binData.dataType[0], binData.count[0], binData.value[0]])
+                binnedObservations.append([item.referenceId, item.referenceLength/100, item.numberOfBins, binPos+1, binData.dataType[0], binData.count[0], binData.value[0]])
                 
     return binnedObservations;
