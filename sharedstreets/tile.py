@@ -4,6 +4,7 @@ from google.protobuf.internal.decoder import _DecodeVarint32
 from . import sharedstreets_pb2
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.DEBUG)
 
 # https://github.com/sharedstreets/sharedstreets-ref-system/issues/16
 DATA_URL_TEMPLATE, DATA_ZOOM = 'https://tiles.sharedstreets.io/osm/planet-180312/{z}-{x}-{y}.{layer}.6.pbf', 12
@@ -11,7 +12,7 @@ data_classes = {
     'reference': sharedstreets_pb2.SharedStreetsReference,
     'intersection': sharedstreets_pb2.SharedStreetsIntersection,
     'geometry': sharedstreets_pb2.SharedStreetsGeometry,
-    'metadata': sharedstreets_pb2.SharedStreetsMetadata,
+    'metadata': sharedstreets_pb2.SharedStreetsMetadata
     }
 
 # Used for Mercator projection and tile space
@@ -36,20 +37,13 @@ def round_coord(float):
     '''
     return round(float, 7)
 
-def iter_objects(url, DataClass):
-    ''' Generate a stream of objects from the protobuf URL.
-    '''
-    response, position = requests.get(url), 0
-    logger.debug('Got {} bytes: {}'.format(len(response.content), repr(response.content[:32])))
 
-    if response.status_code not in range(200, 299):
-        logger.debug('Got HTTP {}'.format(response.status_code))
-        return
+def read_objects(position, content, DataClass):
 
-    while position < len(response.content):
-        message_length, new_position = _DecodeVarint32(response.content, position)
+    while position < len(content):
+        message_length, new_position = _DecodeVarint32(content, position)
         position = new_position
-        message = response.content[position:position+message_length]
+        message = content[position:position+message_length]
         position += message_length
 
         try:
@@ -60,6 +54,35 @@ def iter_objects(url, DataClass):
             continue
         else:
             yield object
+
+def iter_objects(url, DataClass):
+    ''' Generate a stream of objects from the protobuf URL.
+    '''
+    response, position = requests.get(url), 0
+    logger.debug('Got {} bytes: {}'.format(len(response.content), repr(response.content[:32])))
+
+    if response.status_code not in range(200, 299):
+        logger.debug('Got HTTP {}'.format(response.status_code))
+        return
+
+    for item in read_objects(position, response.content, DataClass):
+        yield item
+
+    # while position < len(response.content):
+    #     message_length, new_position = _DecodeVarint32(response.content, position)
+    #     position = new_position
+    #     message = response.content[position:position+message_length]
+    #     position += message_length
+
+    #     try:
+    #         object = DataClass()
+    #         object.ParseFromString(message)
+    #     except google.protobuf.message.DecodeError:
+    #         # Empty tile? Shrug.
+    #         continue
+    #     else:
+    #         yield object
+
 
 def is_inside(southwest, northeast, geometry):
     ''' Return True if the geometry bbox is inside a location pair bbox.
@@ -208,6 +231,8 @@ def reference_feature(reference, id_length):
                 },
             ]
         }
+
+
 
 def make_geojson(tile, id_length=32):
     ''' Get a GeoJSON dictionary for a geographic tile.
