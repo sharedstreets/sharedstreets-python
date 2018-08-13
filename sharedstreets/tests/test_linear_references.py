@@ -18,6 +18,32 @@ class TestTile (unittest.TestCase):
 
         with open('12-946-1650.events.pbf', 'rb') as file:
             fileContent = file.read()
-            observations = linear_references.flatten_binned_events(fileContent)
-            print(observations)
-            self.assertEqual(len(observations), 89)
+            observations = linear_references.load_binned_events(fileContent)
+
+            self.assertEqual(len(observations), 31)
+
+            flattened_count = 0
+            for observation in observations:
+                for item in observation.flatten():
+                    flattened_count += 1
+                    print(item)
+            
+            self.assertEqual(flattened_count, 89)
+
+            flattened_count = 0
+            for observation in observations:
+                observation.filter(1)
+                for item in observation.flatten():
+                    flattened_count += 1
+                    print(item)
+
+            self.assertEqual(flattened_count, 89)
+
+            flattened_count = 0
+            for observation in observations:
+                observation.filter(2)
+                for item in observation.flatten():
+                    flattened_count += 1
+                    print(item)
+
+            self.assertEqual(flattened_count, 0)
