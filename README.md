@@ -47,8 +47,21 @@ Read linear references from PBF encoded event tiles. `flatten_binned_events` ret
         import sharedstreets.linear_references
         with open('12-946-1650.events.pbf', 'rb') as file:
             fileContent = file.read()
-            observations = linear_references.flatten_binned_events(fileContent)
-            print(observations)
+            observations = linear_references.load_binned_events(fileContent)
+            
+            # shows all items as flattened arrays 
+            for observation in observations:
+                for flattened_observation in observation.flatten():
+                    print(flattened_observation)
+
+            # shows only items passing the filter criteria (e.g. min of 2 counts per bin/time period)
+            for observation in observations:
+                observation.filter(2) # filter by min count per bin/time period
+                for flattened_observation in observation.flatten():
+                    print(flattened_observation)
+
+            
+        
 
 ## Develop
 
