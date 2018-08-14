@@ -4,8 +4,10 @@ import math
 import copy
 from . import tile
 from . import linear_references_pb2
+from google.protobuf.internal.encoder import _VarintEncoder
 
 from collections import defaultdict
+
 
 protobuf_classes = [
     linear_references_pb2.SharedStreetsWeeklyBinnedLinearReferences
@@ -62,12 +64,17 @@ class BinnedLinearReference:
             self.data = {}
 
             for bin_index in range(0, len(item.binPosition)):
+
                 bin_position = item.binPosition[bin_index]
                 linear_bin = item.binnedPeriodicData[bin_index]
+
                 for period_index in range(0, len(linear_bin.periodOffset)):
+
                     period_offset = linear_bin.periodOffset[period_index]
                     bin_data = linear_bin.bins[period_index]
+
                     for data_index in range(0, len(bin_data.dataType)):
+
                         data_type = bin_data.dataType[data_index]
                         data_count = bin_data.count[data_index]
                         data_value = bin_data.value[data_index]
@@ -109,7 +116,8 @@ class BinnedLinearReference:
     # resize bins works only with scaled counts
     def resize_bins(self, new_bin_length, max_count):
 
-        # wip
+        data_copy = copy.deepcopy(self.data)
+
         return
 
 
@@ -124,9 +132,11 @@ class BinnedLinearReference:
         for data_type in self.data:
             for bin_pos in self.data[data_type]:
                 for bin_period in self.data[data_type][bin_pos]:
+
                     existing_count = self.data[data_type][bin_pos][bin_period]['count']
                     existing_value = self.data[data_type][bin_pos][bin_period]['value']
                     if data_type in new_data and bin_pos in new_data[data_type] and bin_period in new_data[data_type][bin_pos]: 
+
                         new_count = new_data.data[data_type][bin_pos][bin_period]['count']
                         new_value = new_data.data[data_type][bin_pos][bin_period]['value']
                         
@@ -164,6 +174,43 @@ class BinnedLinearReference:
                     for attribute in self.data[data_type][bin_pos][bin_period]:
                         print('\t\t\t ' +  str(attribute) + ":" + str(self.data[data_type][bin_pos][bin_period][attribute]))
 
+    def toPbf(self):
+
+        pbfBinnedLinearReference = linear_references_pb2.SharedStreetsWeeklyBinnedLinearReferences()
+
+        pbfBinnedLinearReference.referenceId = self.reference_id
+        pbfBinnedLinearReference.referenceLength = int(round(self.reference_length * 100)) 
+        pbfBinnedLinearReference.numberOfBins = self.number_of_bins
+        pbfBinnedLinearReference.scaledCounts = self.scaled_counts
+
+        pbfData = {}
+
+        # pivot data to pbf format
+        for data_type in self.data:
+            for bin_pos in self.data[data_type]:
+                for bin_period in self.data[data_type][bin_pos]:
+                    
+                    data_count = self.data[data_type][bin_pos][bin_period]['count']
+                    data_value = self.data[data_type][bin_pos][bin_period]['value']
+
+                    # TODO handle multi data-type writes
+                    pbfData.setdefault(bin_pos, {})[bin_period] = {"data_type": data_type, "count": data_count, "value": data_value} 
+
+        # write data to pbf 
+        for bin_pos in pbfData:
+            bin_position = pbfBinnedLinearReference.binPosition.append(bin_pos)
+            bin_position_data = pbfBinnedLinearReference.binnedPeriodicData.add()
+            for bin_period in pbfData[bin_pos]:
+                bin_position_data.periodOffset.append(bin_period)
+                bin_period_data = bin_position_data.bins.add()
+
+                bin_period_data.dataType.append(pbfData[bin_pos][bin_period]['data_type'])
+                bin_period_data.count.append(pbfData[bin_pos][bin_period]['count'])
+                bin_period_data.value.append(pbfData[bin_pos][bin_period]['value']) 
+        
+
+        return pbfBinnedLinearReference.SerializeToString()
+
 
     def flatten(self):
         flattend_observations = []
@@ -176,6 +223,19 @@ class BinnedLinearReference:
                     flattend_observations.append(flattened_observation)
 
         return flattend_observations
+
+
+# generates a length encoded stream of pbf
+def generate_pbf(output_file, binned_observations):
+    
+    for binned_reference in binned_observations:
+
+        pbf_data = binned_reference.toPbf()
+        size_of_data = len(pbf_data)
+        _VarintEncoder()(output_file.write, size_of_data, True)
+        output_file.write(pbf_data)
+        #output.append(pbf_data)
+
 
 
 def load_binned_events(tileContent):

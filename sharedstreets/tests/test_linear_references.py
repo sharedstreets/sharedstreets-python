@@ -15,12 +15,28 @@ def respond_locally(url, request):
 class TestTile (unittest.TestCase):
 
     def test_linear_references(self):
-
-        with open('12-946-1650.events.pbf', 'rb') as file:
+        filename = '12-946-1650.events.pbf'
+        with open(filename, 'rb') as file:
             fileContent = file.read()
             observations = linear_references.load_binned_events(fileContent)
-
             self.assertEqual(len(observations), 31)
+
+            test_output_filename = '__test__' + filename
+            try:
+                os.remove(test_output_filename)
+            except OSError:
+                pass
+
+            newFile = open(test_output_filename, "wb")
+            linear_references.generate_pbf(newFile, observations) 
+            newFile.close()
+
+            with open(test_output_filename, 'rb') as file:
+                fileContent = file.read()
+                test_observations = linear_references.load_binned_events(fileContent)
+                self.assertEqual(len(test_observations), 31)
+
+      
 
             flattened_count = 0
             for observation in observations:
