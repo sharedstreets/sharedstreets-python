@@ -79,8 +79,7 @@ class BinnedLinearReference:
                         data_count = bin_data.count[data_index]
                         data_value = bin_data.value[data_index]
 
-
-                    self.data.setdefault(data_type, {}).setdefault(bin_position, {})[period_offset] = {"count": data_count, "value": data_value} 
+                        self.data.setdefault(data_type, {}).setdefault(bin_position, {})[period_offset] = {"count": data_count, "value": data_value} 
 
     def __str__(self):
         return self.reference_id + ': ' + str(self.reference_length) + 'm / ' +  str(self.number_of_bins) + ' bins -> ' + '{0:.3g}'.format(self.get_bin_length()) + ' m/bin'
@@ -95,7 +94,7 @@ class BinnedLinearReference:
             for bin_pos in self.data[data_type]:
                 for bin_period in self.data[data_type][bin_pos]:
                     if 'count' in self.data[data_type][bin_pos][bin_period] and self.data[data_type][bin_pos][bin_period]['count'] > max_count:
-                        max_count = self.data[data_type][bin_pos]['count']
+                        max_count = self.data[data_type][bin_pos][bin_period]['count']
         
         return max_count
 
@@ -110,7 +109,7 @@ class BinnedLinearReference:
             for bin_pos in self.data[data_type]:
                 for bin_period in self.data[data_type][bin_pos]:
                     if 'count' in self.data[data_type][bin_pos][bin_period] and self.data[data_type][bin_pos][bin_period]['count'] > 0:
-                        self.data[data_type][bin_pos]['count']  = float(self.data[data_type][bin_pos]['count']) / float(max_count)
+                        self.data[data_type][bin_pos][bin_period]['count'] = float(self.data[data_type][bin_pos][bin_period]['count']) / float(max_count)
 
 
     # resize bins works only with scaled counts
