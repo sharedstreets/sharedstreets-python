@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.DEBUG)
 
 # https://github.com/sharedstreets/sharedstreets-ref-system/issues/16
-DATA_URL_TEMPLATE, DATA_ZOOM = 'https://tiles.sharedstreets.io/osm/planet-180312/{z}-{x}-{y}.{layer}.6.pbf', 12
+DATA_URL_TEMPLATE, DATA_ZOOM = 'https://tiles.sharedstreets.io/osm/planet-180430/{z}-{x}-{y}.{layer}.6.pbf', 12
 data_classes = {
     'reference': sharedstreets_pb2.SharedStreetsReference,
     'intersection': sharedstreets_pb2.SharedStreetsIntersection,
