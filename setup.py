@@ -30,4 +30,19 @@ setup(
         'httmock==1.2.6',
         'mock==2.0.0',
         ],
+    extras_require = {
+        'local': [
+            'geopandas==0.4.0',
+            'Shapely==1.6.4.post2',
+            'pandas==0.23.4',
+            'pyproj==1.9.5.1',
+            'Fiona==1.7.13',
+            'pytz==2018.5',
+            'numpy==1.15.1',
+            'click-plugins==1.0.3',
+            'cligj==0.4.0',
+            'munch==2.3.2',
+            'python-dateutil==2.7.3',
+            ]
+        },
 )

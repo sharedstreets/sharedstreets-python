@@ -1,4 +1,6 @@
 import pandas
+import geopandas
+from .. import tile
 
 class Addition:
 
@@ -61,3 +63,41 @@ else:
 delete_things123 = Deletion(things1)
 things7 = delete_things123.apply(add_thing4.apply(things1))
 assert len(things7) == 1
+
+class Feature:
+    def __init__(self, properties, type, coordinates):
+        self.__geo_interface__ = {
+            'type': 'Feature', 'properties': properties,
+            'geometry': {'type': type, 'coordinates': coordinates},
+            }
+
+print('getting')
+tile = tile.get_tile(12, 656, 1582) #, data_url_template='http://0.0.0.0:8000/planet-180312-{z}-{x}-{y}.{layer}.6.pbf')
+
+features1 = [
+    Feature({
+        'id': item.id, 'nodeId': item.nodeId,
+        'inboundReferenceIds': item.inboundReferenceIds,
+        'outboundReferenceIds': item.outboundReferenceIds,
+        }, 'Point', [item.lon, item.lat])
+    for item in tile.intersections.values()
+    ]
+
+frame1 = geopandas.GeoDataFrame.from_features(features1).set_index('id', drop=False, verify_integrity=True)
+
+print(frame1)
+
+features2 = [
+    Feature({
+        'id': item.id, 'roadClass': item.roadClass,
+        'fromIntersectionId': item.fromIntersectionId,
+        'toIntersectionId': item.toIntersectionId,
+        'forwardReferenceId': item.forwardReferenceId,
+        'backReferenceId': item.backReferenceId,
+        }, 'LineString', zip(item.lonlats[0::2], item.lonlats[1::2]))
+    for item in tile.geometries.values()
+    ]
+
+frame2 = geopandas.GeoDataFrame.from_features(features2).set_index('id', drop=False, verify_integrity=True)
+
+print(frame2)
