@@ -9,22 +9,22 @@ class Frames:
         self.geometries = geometries
 
 class _Feature:
+    ''' Simple implementation of __geo_interface__ for GeoDataFrame.from_features().
+    '''
     def __init__(self, properties, type, coordinates):
         self.__geo_interface__ = {
             'type': 'Feature', 'properties': properties,
             'geometry': {'type': type, 'coordinates': coordinates},
             }
-def get_tile(zoom, x, y, data_url_template=None):
-    ''' Get a single Frames instance.
-    
-        Arguments are passed to tile.get_tile().
-        
-        zoom, x, y: Web mercator tile coordinates using OpenStreetMap convention.
-        data_url_template: RFC 6570 URI template for upstream protobuf tiles.
-    '''
-    T = tile.get_tile(zoom, x, y, data_url_template)
 
-    features1 = [
+def get_tile(*args, **kwargs):
+    ''' Get a single Frames instance for a tile of SharedStreets entities.
+    
+        All arguments are passed to tile.get_tile().
+    '''
+    T = tile.get_tile(*args, **kwargs)
+
+    ifeatures = [
         _Feature({
             'id': item.id, 'nodeId': item.nodeId,
             'inboundReferenceIds': item.inboundReferenceIds,
@@ -33,7 +33,7 @@ def get_tile(zoom, x, y, data_url_template=None):
         for item in T.intersections.values()
         ]
 
-    features2 = [
+    gfeatures = [
         _Feature({
             'id': item.id, 'roadClass': item.roadClass,
             'fromIntersectionId': item.fromIntersectionId,
@@ -45,7 +45,7 @@ def get_tile(zoom, x, y, data_url_template=None):
         ]
 
     kwargs = dict(drop=False, verify_integrity=True)
-    iframe = geopandas.GeoDataFrame.from_features(features1).set_index('id', **kwargs)
-    gframe = geopandas.GeoDataFrame.from_features(features2).set_index('id', **kwargs)
+    iframe = geopandas.GeoDataFrame.from_features(ifeatures).set_index('id', **kwargs)
+    gframe = geopandas.GeoDataFrame.from_features(gfeatures).set_index('id', **kwargs)
     
     return Frames(iframe, gframe)
