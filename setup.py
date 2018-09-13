@@ -8,7 +8,7 @@ setup(
     license = 'MIT',
     keywords = 'sharedstreets nacto openstreetmap map graph street',
     url = 'https://github.com/sharedstreets/sharedstreets-python',
-    packages = ['sharedstreets', 'sharedstreets.tests'],
+    packages = ['sharedstreets', 'sharedstreets.tests', 'sharedstreets.dataframe'],
     package_data = {
         'sharedstreets.tests': ['data/*.*'],
         },
@@ -31,8 +31,9 @@ setup(
         'mock==2.0.0',
         ],
     extras_require = {
-        'local': [
+        'dataframe': [
             'geopandas==0.4.0',
+            'Rtree==0.8.3',
             'Shapely==1.6.4.post2',
             'pandas==0.23.4',
             'pyproj==1.9.5.1',
