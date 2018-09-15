@@ -1,6 +1,6 @@
 import pandas
 import geopandas
-from . import get_tile
+from . import get_tile, get_bbox
 
 class Addition:
 
@@ -65,6 +65,8 @@ things7 = delete_things123.apply(add_thing4.apply(things1))
 assert len(things7) == 1
 
 print('getting')
-frames = get_tile(12, 656, 1582) #, data_url_template='http://0.0.0.0:8000/planet-180312-{z}-{x}-{y}.{layer}.6.pbf')
+#frames = get_tile(12, 656, 1582, data_url_template='http://0.0.0.0:8000/planet-180312-{z}-{x}-{y}.{layer}.6.pbf')
+#frames = get_bbox(-122.26482, 37.79760, -122.24636, 37.81286, data_url_template='http://0.0.0.0:8000/planet-180312-{z}-{x}-{y}.{layer}.6.pbf')
+frames = get_bbox(-122.26713, 37.84947, -122.25177, 37.86960) #, data_url_template='http://0.0.0.0:8000/planet-180312-{z}-{x}-{y}.{layer}.6.pbf')
 print(frames.intersections)
 print(frames.geometries)

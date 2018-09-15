@@ -33,6 +33,7 @@ setup(
     extras_require = {
         'dataframe': [
             'geopandas==0.4.0',
+            'mercantile==1.0.4',
             'Rtree==0.8.3',
             'Shapely==1.6.4.post2',
             'pandas==0.23.4',
