@@ -31,6 +31,9 @@ def _union_dataframes(dataframe1, dataframe2):
             seen_ids.add(id)
             new_rows.append(row)
     
+    if not new_rows:
+        return dataframe1
+    
     return dataframe1.append(new_rows, verify_integrity=True)
 
 def _combine_geodataframes(minlon, minlat, maxlon, maxlat, geodataframes):
