@@ -17,9 +17,11 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            sudo apt-get update
+            sudo apt-get install -y libspatialindex-dev
             virtualenv venv
             . venv/bin/activate
-            pip install '.'
+            pip install '.[dataframe]'
       - save_cache:
           key: deps2.7-{{ .Branch }}-{{ checksum "setup.py" }}
           paths:
