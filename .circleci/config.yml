@@ -88,6 +88,36 @@ jobs:
             . venv/bin/activate
             python setup.py test
   
+  test-3.7:
+    docker:
+      - image: circleci/python:3.7
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps3.7-{{ .Branch }}-{{ checksum "setup.py" }}
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libspatialindex-dev
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install cython
+            pip install https://github.com/jswhit/pyproj/archive/429a4fe6fa40.zip
+            pip install '.[dataframe]'
+      - save_cache:
+          key: deps3.7-{{ .Branch }}-{{ checksum "setup.py" }}
+          paths:
+            - "venv"
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            python setup.py test
+  
   release:
     docker:
       - image: circleci/python:3.6
@@ -124,6 +154,7 @@ workflows:
       - test-2.7
       - test-3.5
       - test-3.6
+      - test-3.7
       - release:
           filters:
             branches:
@@ -133,3 +164,4 @@ workflows:
             - test-2.7
             - test-3.5
             - test-3.6
+            - test-3.7

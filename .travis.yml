@@ -9,6 +9,8 @@ python:
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y libspatialindex-dev
+  - pip install cython
+  - pip install https://github.com/jswhit/pyproj/archive/429a4fe6fa40.zip
 
 install:
   - pip install '.[dataframe]'
