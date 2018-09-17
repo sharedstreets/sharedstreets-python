@@ -40,6 +40,10 @@ class TestDataframe (unittest.TestCase):
             get_tile.return_value = mock_tile
             frames = dataframe.get_bbox(-0.00051, -0.00030, 0.00039, 0.00032)
         
+        self.assertEqual(set([mock_call[1][:3] for mock_call in get_tile.mock_calls]),
+            {(12, 2047, 2047), (12, 2047, 2048), (12, 2048, 2047), (12, 2048, 2048)},
+            'Should look for four tiles around Null Island')
+        
         self.assertEqual(set(frames.intersections.id), {'NNNN', 'dddd'})
         self.assertEqual(set(frames.intersections.nodeId), {1, 4})
         self.assertEqual(set(frames.geometries.id), {'NlId'})
