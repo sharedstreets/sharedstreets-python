@@ -28,11 +28,11 @@ class TestDataframe (unittest.TestCase):
             get_tile.return_value = mock_tile
             frames = dataframe.get_tile(12, 2048, 2048)
         
-        self.assertEqual(list(frames.intersections.id), ['NNNN', 'dddd'])
-        self.assertEqual(list(frames.intersections.nodeId), [1, 4])
-        self.assertEqual(list(frames.geometries.id), ['NlId'])
-        self.assertEqual(list(frames.geometries.fromIntersectionId), ['NNNN'])
-        self.assertEqual(list(frames.geometries.toIntersectionId), ['dddd'])
+        self.assertEqual(set(frames.intersections.id), {'NNNN', 'dddd'})
+        self.assertEqual(set(frames.intersections.nodeId), {1, 4})
+        self.assertEqual(set(frames.geometries.id), {'NlId'})
+        self.assertEqual(set(frames.geometries.fromIntersectionId), {'NNNN'})
+        self.assertEqual(set(frames.geometries.toIntersectionId), {'dddd'})
     
     def test_get_bbox(self):
         
@@ -40,8 +40,8 @@ class TestDataframe (unittest.TestCase):
             get_tile.return_value = mock_tile
             frames = dataframe.get_bbox(-0.00051, -0.00030, 0.00039, 0.00032)
         
-        self.assertEqual(list(frames.intersections.id), ['NNNN', 'dddd'])
-        self.assertEqual(list(frames.intersections.nodeId), [1, 4])
-        self.assertEqual(list(frames.geometries.id), ['NlId'])
-        self.assertEqual(list(frames.geometries.fromIntersectionId), ['NNNN'])
-        self.assertEqual(list(frames.geometries.toIntersectionId), ['dddd'])
+        self.assertEqual(set(frames.intersections.id), {'NNNN', 'dddd'})
+        self.assertEqual(set(frames.intersections.nodeId), {1, 4})
+        self.assertEqual(set(frames.geometries.id), {'NlId'})
+        self.assertEqual(set(frames.geometries.fromIntersectionId), {'NNNN'})
+        self.assertEqual(set(frames.geometries.toIntersectionId), {'dddd'})
