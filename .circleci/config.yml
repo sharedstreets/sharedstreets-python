@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  build-2.7:
+  test-2.7:
     docker:
       - image: circleci/python:2.7
 
@@ -30,7 +30,7 @@ jobs:
             . venv/bin/activate
             python setup.py test
 
-  build-3.5:
+  test-3.5:
     docker:
       - image: circleci/python:3.5
 
@@ -58,7 +58,7 @@ jobs:
             . venv/bin/activate
             python setup.py test
 
-  build-3.6:
+  test-3.6:
     docker:
       - image: circleci/python:3.6
 
@@ -119,15 +119,15 @@ workflows:
   version: 2
   build:
     jobs:
-      - build-2.7
-      - build-3.5
-      - build-3.6
+      - test-2.7
+      - test-3.5
+      - test-3.6
       - release:
           filters:
             branches:
               only:
                 - migurski/add-local-representation
           requires:
-            - build-2.7
-            - build-3.5
-            - build-3.6
+            - test-2.7
+            - test-3.5
+            - test-3.6
