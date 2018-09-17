@@ -159,7 +159,7 @@ workflows:
           filters:
             branches:
               only:
-                - migurski/add-local-representation
+                - master
           requires:
             - test-2.7
             - test-3.5
