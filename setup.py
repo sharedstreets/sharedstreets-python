@@ -1,5 +1,16 @@
 from setuptools import setup
 
+base_requirements = [
+    'protobuf', 'ModestMaps', 'uritemplate', 'requests', 'httmock', 'mock'
+    ]
+
+web_requirements = ['flask', 'Flask-Cors', 'gunicorn']
+
+dataframe_requirements = [
+    'geopandas', 'mercantile', 'Rtree', 'Shapely', 'pandas', 'pyproj', 'Fiona', 'pytz',
+    'numpy', 'click-plugins', 'cligj', 'munch', 'python-dateutil'
+    ]
+
 setup(
     name = 'sharedstreets',
     version = '0.2.1',
@@ -19,32 +30,8 @@ setup(
             'sharedstreets-debug-webapp = sharedstreets.webapp:main',
         ]
     },
-    install_requires = [
-        'protobuf==3.5.1',
-        'ModestMaps==1.4.7',
-        'uritemplate==3.0.0',
-        'requests==2.18.4',
-        'flask==0.12.2',
-        'Flask-Cors==3.0.3',
-        'gunicorn==19.7.1',
-        'httmock==1.2.6',
-        'mock==2.0.0',
-        ],
+    install_requires = base_requirements + web_requirements,
     extras_require = {
-        'dataframe': [
-            'geopandas==0.4.0',
-            'mercantile==1.0.4',
-            'Rtree==0.8.3',
-            'Shapely==1.6.4.post2',
-            'pandas==0.23.4',
-            'pyproj==1.9.5.1',
-            'Fiona==1.7.13',
-            'pytz==2018.5',
-            'numpy==1.15.1',
-            'click-plugins==1.0.3',
-            'cligj==0.4.0',
-            'munch==2.3.2',
-            'python-dateutil==2.7.3',
-            ]
+        'dataframe': dataframe_requirements,
         },
 )
