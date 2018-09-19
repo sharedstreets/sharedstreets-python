@@ -18,7 +18,7 @@ data_classes = {
 OSM = ModestMaps.OpenStreetMap.Provider()
 
 class Tile:
-    ''' Container for lists of SharedStreets geometries, intersections, references, and metadata.
+    ''' Container for dicts of SharedStreets geometries, intersections, references, and metadata.
     '''
     def __init__(self, geometries, intersections, references, metadata):
         self.geometries = geometries

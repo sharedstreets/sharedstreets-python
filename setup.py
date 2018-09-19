@@ -1,5 +1,16 @@
 from setuptools import setup
 
+base_requirements = [
+    'protobuf', 'ModestMaps', 'uritemplate', 'requests', 'httmock', 'mock'
+    ]
+
+web_requirements = ['flask', 'Flask-Cors', 'gunicorn']
+
+dataframe_requirements = [
+    'geopandas', 'mercantile', 'Rtree', 'Shapely', 'pandas', 'pyproj', 'Fiona', 'pytz',
+    'numpy', 'click-plugins', 'cligj', 'munch', 'python-dateutil'
+    ]
+
 setup(
     name = 'sharedstreets',
     version = '0.2.1',
@@ -8,7 +19,7 @@ setup(
     license = 'MIT',
     keywords = 'sharedstreets nacto openstreetmap map graph street',
     url = 'https://github.com/sharedstreets/sharedstreets-python',
-    packages = ['sharedstreets', 'sharedstreets.tests'],
+    packages = ['sharedstreets', 'sharedstreets.tests', 'sharedstreets.dataframe'],
     package_data = {
         'sharedstreets.tests': ['data/*.*'],
         },
@@ -19,15 +30,8 @@ setup(
             'sharedstreets-debug-webapp = sharedstreets.webapp:main',
         ]
     },
-    install_requires = [
-        'protobuf==3.5.1',
-        'ModestMaps==1.4.7',
-        'uritemplate==3.0.0',
-        'requests==2.18.4',
-        'flask==0.12.2',
-        'Flask-Cors==3.0.3',
-        'gunicorn==19.7.1',
-        'httmock==1.2.6',
-        'mock==2.0.0',
-        ],
+    install_requires = base_requirements + web_requirements,
+    extras_require = {
+        'dataframe': dataframe_requirements,
+        },
 )

@@ -1,0 +1,167 @@
+# Python CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-python/ for more details
+#
+version: 2
+jobs:
+  test-2.7:
+    docker:
+      - image: circleci/python:2.7
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps2.7-{{ .Branch }}-{{ checksum "setup.py" }}
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libspatialindex-dev
+            virtualenv venv
+            . venv/bin/activate
+            pip install '.[dataframe]'
+      - save_cache:
+          key: deps2.7-{{ .Branch }}-{{ checksum "setup.py" }}
+          paths:
+            - "venv"
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            python setup.py test
+
+  test-3.5:
+    docker:
+      - image: circleci/python:3.5
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps3.5-{{ .Branch }}-{{ checksum "setup.py" }}
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libspatialindex-dev
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install '.[dataframe]'
+      - save_cache:
+          key: deps3.5-{{ .Branch }}-{{ checksum "setup.py" }}
+          paths:
+            - "venv"
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            python setup.py test
+
+  test-3.6:
+    docker:
+      - image: circleci/python:3.6
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps3.6-{{ .Branch }}-{{ checksum "setup.py" }}
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libspatialindex-dev
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install '.[dataframe]'
+      - save_cache:
+          key: deps3.6-{{ .Branch }}-{{ checksum "setup.py" }}
+          paths:
+            - "venv"
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            python setup.py test
+  
+  test-3.7:
+    docker:
+      - image: circleci/python:3.7
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps3.7-{{ .Branch }}-{{ checksum "setup.py" }}
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install -y libspatialindex-dev
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install cython
+            pip install https://github.com/jswhit/pyproj/archive/429a4fe6fa40.zip
+            pip install '.[dataframe]'
+      - save_cache:
+          key: deps3.7-{{ .Branch }}-{{ checksum "setup.py" }}
+          paths:
+            - "venv"
+      - run:
+          name: Run tests
+          command: |
+            . venv/bin/activate
+            python setup.py test
+  
+  release:
+    docker:
+      - image: circleci/python:3.6
+
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: deps3.6-{{ .Branch }}-{{ checksum "setup.py" }}
+      - run:
+          name: Build package
+          command: |
+            . venv/bin/activate
+            python setup.py sdist
+      - run:
+          name: Prepare for PyPI
+          command: |
+            . venv/bin/activate
+            pip install twine
+            echo -e "[pypi]" >> ~/.pypirc
+            echo -e "username = $PYPI_USERNAME" >> ~/.pypirc
+            echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
+      - run:
+          name: Release package
+          command: |
+            . venv/bin/activate
+            twine upload dist/*
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - test-2.7
+      - test-3.5
+      - test-3.6
+      - test-3.7
+      - release:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - test-2.7
+            - test-3.5
+            - test-3.6
+            - test-3.7

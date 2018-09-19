@@ -2,14 +2,18 @@ language: python
 
 python:
   - "2.7"
-  - "3.3"
-  - "3.4"
   - "3.5"
   - "3.6"
   - "3.7-dev"
 
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y libspatialindex-dev
+  - pip install cython
+  - pip install https://github.com/jswhit/pyproj/archive/429a4fe6fa40.zip
+
 install:
-  - pip install .
+  - pip install '.[dataframe]'
 
 script:
   - python setup.py test
