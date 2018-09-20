@@ -13,7 +13,7 @@ dataframe_requirements = [
 
 setup(
     name = 'sharedstreets',
-    version = '0.3.0',
+    version = '0.3.1',
     author = 'Kevin Webb, Denis Carriere, Michal Migurski',
     description = 'Python implementation of SharedStreets Reference System',
     license = 'MIT',
