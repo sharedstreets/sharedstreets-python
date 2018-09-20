@@ -5,6 +5,7 @@ import logging
 import collections
 import geopandas
 import mercantile
+from shapely.geometry import box
 from .. import tile
 
 # Container for dataframes of SharedStreets geometries and intersections.
@@ -19,7 +20,7 @@ class _Feature:
             'geometry': {'type': type, 'coordinates': coordinates},
             }
 
-def _make_frames(intersections, geometries):
+def _make_frames(intersections, geometries, bounds=None):
     ''' Return a Frames instance for lists of SharedStreets entities.
     '''
     ifeatures = [
@@ -42,15 +43,25 @@ def _make_frames(intersections, geometries):
         for item in geometries
         ]
 
-    kwargs = dict(drop=False, verify_integrity=True)
-    iframe = geopandas.GeoDataFrame.from_features(ifeatures).set_index('id', **kwargs)
-    gframe = geopandas.GeoDataFrame.from_features(gfeatures).set_index('id', **kwargs)
-    
-    return Frames(iframe, gframe)
+    def clip_bbox(gdf):
+        if bounds is None:
+            return gdf
+        index = list(gdf.sindex.intersection(bounds))
+        return gdf.iloc[index]
+
+    def make_frame(features):
+        gdf = geopandas.GeoDataFrame.from_features(features, crs={'init': 'epsg:4326'})
+        return gdf.set_index('id', drop=False, verify_integrity=True)
+
+    intersectionsdf = clip_bbox(make_frame(ifeatures))
+    geometriesdf = clip_bbox(make_frame(gfeatures))
+
+    return Frames(intersectionsdf, geometriesdf)
 
 def get_bbox(minlon, minlat, maxlon, maxlat, data_url_template=None):
     ''' Get a single Frames instance of SharedStreets entities in an area.
     '''
+    bounds = (minlon, minlat, maxlon, maxlat)
     ul = mercantile.tile(minlon, maxlat, tile.DATA_ZOOM)
     lr = mercantile.tile(maxlon, minlat, tile.DATA_ZOOM)
     
@@ -62,7 +73,7 @@ def get_bbox(minlon, minlat, maxlon, maxlat, data_url_template=None):
     all_geometries = functools.reduce(lambda d, t: dict(d, **t.geometries), tiles, {})
     all_intersections = functools.reduce(lambda d, t: dict(d, **t.intersections), tiles, {})
 
-    return _make_frames(all_intersections.values(), all_geometries.values())
+    return _make_frames(all_intersections.values(), all_geometries.values(), bounds)
 
 def get_tile(*args, **kwargs):
     ''' Get a single Frames instance for a tile of SharedStreets entities.
