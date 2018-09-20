@@ -42,11 +42,14 @@ def _make_frames(intersections, geometries):
         for item in geometries
         ]
 
-    kwargs = dict(drop=False, verify_integrity=True)
-    iframe = geopandas.GeoDataFrame.from_features(ifeatures).set_index('id', **kwargs)
-    gframe = geopandas.GeoDataFrame.from_features(gfeatures).set_index('id', **kwargs)
-    
-    return Frames(iframe, gframe)
+    def make_frame(features):
+        gdf = geopandas.GeoDataFrame.from_features(features)
+        return gdf.set_index('id', drop=False, verify_integrity=True)
+
+    intersectionsdf = make_frame(ifeatures)
+    geometriesdf = make_frame(gfeatures)
+
+    return Frames(intersectionsdf, geometriesdf)
 
 def get_bbox(minlon, minlat, maxlon, maxlat, data_url_template=None):
     ''' Get a single Frames instance of SharedStreets entities in an area.
