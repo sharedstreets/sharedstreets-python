@@ -50,7 +50,7 @@ def _make_frames(intersections, geometries, bounds=None):
         return gdf.iloc[index]
 
     def make_frame(features):
-        gdf = geopandas.GeoDataFrame.from_features(features)
+        gdf = geopandas.GeoDataFrame.from_features(features, crs={'init': 'epsg:4326'})
         return gdf.set_index('id', drop=False, verify_integrity=True)
 
     intersectionsdf = clip_bbox(make_frame(ifeatures))
