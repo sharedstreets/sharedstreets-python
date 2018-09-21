@@ -13,8 +13,8 @@ dataframe_requirements = [
 
 setup(
     name = 'sharedstreets',
-    version = '0.3.1',
-    author = 'Kevin Webb, Denis Carriere, Michal Migurski',
+    version = '0.4.0',
+    author = 'Kevin Webb, Denis Carriere, Danny Whalen, Michal Migurski',
     description = 'Python implementation of SharedStreets Reference System',
     license = 'MIT',
     keywords = 'sharedstreets nacto openstreetmap map graph street',
