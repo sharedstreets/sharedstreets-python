@@ -4,7 +4,7 @@ base_requirements = [
     'protobuf', 'ModestMaps', 'uritemplate', 'requests', 'httmock', 'mock'
     ]
 
-web_requirements = ['flask', 'Flask-Cors', 'gunicorn']
+webserver_requirements = ['flask', 'Flask-Cors', 'gunicorn']
 
 dataframe_requirements = [
     'geopandas', 'mercantile', 'Rtree', 'Shapely', 'pandas', 'pyproj', 'Fiona', 'pytz',
@@ -30,8 +30,9 @@ setup(
             'sharedstreets-debug-webapp = sharedstreets.webapp:main',
         ]
     },
-    install_requires = base_requirements + web_requirements,
+    install_requires = base_requirements,
     extras_require = {
+        'webserver': webserver_requirements,
         'dataframe': dataframe_requirements,
         },
 )

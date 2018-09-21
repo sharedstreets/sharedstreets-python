@@ -21,7 +21,7 @@ jobs:
             sudo apt-get install -y libspatialindex-dev
             virtualenv venv
             . venv/bin/activate
-            pip install '.[dataframe]'
+            pip install '.[dataframe,webserver]'
       - save_cache:
           key: deps2.7-{{ .Branch }}-{{ checksum "setup.py" }}
           paths:
@@ -49,7 +49,7 @@ jobs:
             sudo apt-get install -y libspatialindex-dev
             python3 -m venv venv
             . venv/bin/activate
-            pip install '.[dataframe]'
+            pip install '.[dataframe,webserver]'
       - save_cache:
           key: deps3.5-{{ .Branch }}-{{ checksum "setup.py" }}
           paths:
@@ -77,7 +77,7 @@ jobs:
             sudo apt-get install -y libspatialindex-dev
             python3 -m venv venv
             . venv/bin/activate
-            pip install '.[dataframe]'
+            pip install '.[dataframe,webserver]'
       - save_cache:
           key: deps3.6-{{ .Branch }}-{{ checksum "setup.py" }}
           paths:
@@ -107,7 +107,7 @@ jobs:
             . venv/bin/activate
             pip install cython
             pip install https://github.com/jswhit/pyproj/archive/429a4fe6fa40.zip
-            pip install '.[dataframe]'
+            pip install '.[dataframe,webserver]'
       - save_cache:
           key: deps3.7-{{ .Branch }}-{{ checksum "setup.py" }}
           paths:
